@@ -1,6 +1,6 @@
 {
-  "generated_utc": "2026-05-19T20:26:48Z",
-  "generated_local": "2026-05-19 15:26 CDT",
+  "generated_utc": "2026-05-19T21:53:15Z",
+  "generated_local": "2026-05-19 16:53 CDT",
   "station_name": "New Canal Station, LA",
   "station_id": "8761927",
   "wind_source_station_label": "KNEW / Lakefront Airport NBM hourly text",
@@ -44,27 +44,10 @@
     "petss_clean_csv": "data/surge_dashboard/new_canal_petss_clean.csv",
     "hilo_json": "data/surge_dashboard/new_canal_hilo.json"
   },
-  "now_utc": "2026-05-19T20:26:48Z",
-  "now_local": "2026-05-19 15:26 CDT",
+  "now_utc": "2026-05-19T21:53:15Z",
+  "now_local": "2026-05-19 16:53 CDT",
   "series_count": 91,
   "series": [
-    {
-      "time_utc": "2026-05-19T14:00:00Z",
-      "time_local": "2026-05-19 09:00 CDT",
-      "surge_ft": 0.7,
-      "surge10_ft": 0.7,
-      "surge90_ft": 0.7,
-      "tide_ft": 0.055,
-      "twl_ft": 1.108,
-      "twl10_ft": 1.108,
-      "twl90_ft": 1.108,
-      "obs_ft": 1.108,
-      "bias_ft": 0.353,
-      "wind_dir_deg": null,
-      "wind_speed_kt": null,
-      "wind_gust_kt": null,
-      "is_favorable_wind": false
-    },
     {
       "time_utc": "2026-05-19T15:00:00Z",
       "time_local": "2026-05-19 10:00 CDT",
@@ -1594,15 +1577,26 @@
       "wind_speed_kt": null,
       "wind_gust_kt": null,
       "is_favorable_wind": false
+    },
+    {
+      "time_utc": "2026-05-23T09:00:00Z",
+      "time_local": "2026-05-23 04:00 CDT",
+      "surge_ft": 0.8,
+      "surge10_ft": 0.8,
+      "surge90_ft": 0.7,
+      "tide_ft": 0.486,
+      "twl_ft": 1.556,
+      "twl10_ft": 1.556,
+      "twl90_ft": 1.456,
+      "obs_ft": null,
+      "bias_ft": 0.27,
+      "wind_dir_deg": null,
+      "wind_speed_kt": null,
+      "wind_gust_kt": null,
+      "is_favorable_wind": false
     }
   ],
   "hilo_markers": [
-    {
-      "time_utc": "2026-05-19T14:31:00Z",
-      "time_local": "2026-05-19 09:31 CDT",
-      "type": "L",
-      "value_ft": 0.058
-    },
     {
       "time_utc": "2026-05-20T02:54:00Z",
       "time_local": "2026-05-19 21:54 CDT",
