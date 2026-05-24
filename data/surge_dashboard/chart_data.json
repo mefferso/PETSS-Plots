@@ -1,6 +1,6 @@
 {
-  "generated_utc": "2026-05-24T16:56:10Z",
-  "generated_local": "2026-05-24 11:56 CDT",
+  "generated_utc": "2026-05-24T17:56:06Z",
+  "generated_local": "2026-05-24 12:56 CDT",
   "station_name": "New Canal Station, LA",
   "station_id": "8761927",
   "wind_source_station_label": "KNEW / Lakefront Airport NBM hourly text",
@@ -33,10 +33,10 @@
       "value_ft": 0.372
     },
     "next_low_tide": {
-      "time_utc": "2026-05-24T17:14:00Z",
-      "time_local": "2026-05-24 12:14 CDT",
+      "time_utc": "2026-05-25T15:25:00Z",
+      "time_local": "2026-05-25 10:25 CDT",
       "type": "L",
-      "value_ft": 0.259
+      "value_ft": 0.311
     }
   },
   "source_files": {
@@ -44,27 +44,10 @@
     "petss_clean_csv": "data/surge_dashboard/new_canal_petss_clean.csv",
     "hilo_json": "data/surge_dashboard/new_canal_hilo.json"
   },
-  "now_utc": "2026-05-24T16:56:10Z",
-  "now_local": "2026-05-24 11:56 CDT",
+  "now_utc": "2026-05-24T17:56:06Z",
+  "now_local": "2026-05-24 12:56 CDT",
   "series_count": 91,
   "series": [
-    {
-      "time_utc": "2026-05-24T10:00:00Z",
-      "time_local": "2026-05-24 05:00 CDT",
-      "surge_ft": 0.6,
-      "surge10_ft": 0.6,
-      "surge90_ft": 0.6,
-      "tide_ft": 0.42,
-      "twl_ft": 1.279,
-      "twl10_ft": 1.279,
-      "twl90_ft": 1.279,
-      "obs_ft": 1.279,
-      "bias_ft": 0.259,
-      "wind_dir_deg": null,
-      "wind_speed_kt": null,
-      "wind_gust_kt": null,
-      "is_favorable_wind": false
-    },
     {
       "time_utc": "2026-05-24T11:00:00Z",
       "time_local": "2026-05-24 06:00 CDT",
@@ -1588,6 +1571,23 @@
       "twl_ft": 1.37,
       "twl10_ft": 1.37,
       "twl90_ft": 1.27,
+      "obs_ft": null,
+      "bias_ft": 0.35,
+      "wind_dir_deg": null,
+      "wind_speed_kt": null,
+      "wind_gust_kt": null,
+      "is_favorable_wind": false
+    },
+    {
+      "time_utc": "2026-05-28T05:00:00Z",
+      "time_local": "2026-05-28 00:00 CDT",
+      "surge_ft": 0.7,
+      "surge10_ft": 0.7,
+      "surge90_ft": 0.6,
+      "tide_ft": 0.266,
+      "twl_ft": 1.316,
+      "twl10_ft": 1.316,
+      "twl90_ft": 1.216,
       "obs_ft": null,
       "bias_ft": 0.35,
       "wind_dir_deg": null,
