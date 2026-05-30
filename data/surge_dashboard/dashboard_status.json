@@ -1,6 +1,6 @@
 {
-  "generated_utc": "2026-05-30T10:21:10Z",
-  "generated_local": "2026-05-30 05:21 CDT",
+  "generated_utc": "2026-05-30T11:50:18Z",
+  "generated_local": "2026-05-30 06:50 CDT",
   "headline": "Modest surge signal: forecast surge peaks near 0.70 ft.",
   "series_count": 91,
   "max_surge_ft": 0.7,
@@ -13,9 +13,9 @@
     "value_ft": 0.603
   },
   "next_low_tide": {
-    "time_utc": "2026-05-30T11:48:00Z",
-    "time_local": "2026-05-30 06:48 CDT",
+    "time_utc": "2026-05-31T12:23:00Z",
+    "time_local": "2026-05-31 07:23 CDT",
     "type": "L",
-    "value_ft": 0.092
+    "value_ft": 0.085
   }
 }
