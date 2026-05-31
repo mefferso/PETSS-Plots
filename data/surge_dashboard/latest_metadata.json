@@ -1,8 +1,8 @@
 {
-  "fetched_utc": "2026-05-31T17:16:33Z",
+  "fetched_utc": "2026-05-31T18:45:59Z",
   "petss_cycle_date_utc": "20260531",
-  "petss_cycle_hour_utc": "06",
-  "petss_archive_url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/petss/prod/petss.20260531/petss.t06z.gefs_csv.tar.gz",
+  "petss_cycle_hour_utc": "12",
+  "petss_archive_url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/petss/prod/petss.20260531/petss.t12z.gefs_csv.tar.gz",
   "petss_station_id": "8761927",
   "petss_station_name": "New Canal Station, LA",
   "tide_station_id": "8761927",
