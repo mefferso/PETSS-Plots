@@ -701,7 +701,6 @@
           };
 
           redrawCurrentChart();
-          setStatus(`Viewing ${station.name} | obs points: ${filteredObserved.length} | forecast points: ${filteredForecast.length}`);
         },
         error: function(err) {
           chartEl.innerHTML = `<p style="padding:20px;color:#b42318;font-weight:bold;">Failed to load CSV: ${err.message}</p>`;
