@@ -8,743 +8,129 @@
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
   <style>
-    :root {
-      --bg: #eef3f8;
-      --card: #ffffff;
-      --text: #15202b;
-      --muted: #5b6875;
-      --border: #d7e0ea;
-      --shadow: 0 10px 24px rgba(20, 32, 43, 0.08);
-      --accent: #1f77b4;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      padding: 24px;
-      font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: linear-gradient(180deg, #eef3f8 0%, #f7f9fc 100%);
-      color: var(--text);
-    }
-
-    .wrap {
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-
-    .topbar {
-      padding: 20px 22px 14px 22px;
-      border-bottom: 1px solid var(--border);
-      background: linear-gradient(180deg, #ffffff 0%, #f8fbfe 100%);
-    }
-
-    .topbar h1 {
-      margin: 0 0 14px 0;
-      font-size: 28px;
-      line-height: 1.2;
-    }
-
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      align-items: end;
-    }
-
-    .control-group {
-      min-width: 280px;
-    }
-
-    .control-group label {
-      display: block;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--muted);
-      margin-bottom: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    .control-group select {
-      width: 100%;
-      padding: 12px 14px;
-      font-size: 16px;
-      border: 1px solid #bcc9d6;
-      border-radius: 12px;
-      background: #fff;
-      color: var(--text);
-      outline: none;
-    }
-
-    .control-group select:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(31, 119, 180, 0.12);
-    }
-
-    .toggle-label {
-      display: flex !important;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      color: var(--text) !important;
-      font-weight: 700 !important;
-      text-transform: none !important;
-      letter-spacing: normal !important;
-      margin: 0 !important;
-      font-size: 14px !important;
-      height: 45px;
-    }
-
-    .btn {
-      padding: 12px 18px;
-      font-size: 14px;
-      font-weight: bold;
-      color: #ffffff;
-      background-color: var(--accent);
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: background-color 0.2s;
-      height: 45px;
-    }
-
-    .btn:hover {
-      background-color: #155a8a;
-    }
-
-    .meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 14px;
-    }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: #f5f8fb;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 8px 12px;
-      font-size: 14px;
-      color: #22303c;
-    }
-
-    .pill strong {
-      font-weight: 700;
-    }
-
-    #status {
-      padding: 14px 22px 0 22px;
-      font-size: 14px;
-      color: var(--muted);
-      min-height: 34px;
-    }
-
-    #chart {
-      width: 100%;
-      height: 900px;
-      padding: 0 8px 8px 8px;
-    }
-
-    @media (max-width: 768px) {
-      body {
-        padding: 12px;
-      }
-
-      .topbar h1 {
-        font-size: 22px;
-      }
-
-      #chart {
-        height: 760px;
-      }
-    }
+    :root { --bg:#eef3f8; --card:#fff; --text:#15202b; --muted:#5b6875; --border:#d7e0ea; --shadow:0 10px 24px rgba(20,32,43,.08); --accent:#1f77b4; }
+    * { box-sizing:border-box; }
+    body { margin:0; padding:24px; font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif; background:linear-gradient(180deg,#eef3f8 0%,#f7f9fc 100%); color:var(--text); }
+    .wrap { max-width:1400px; margin:0 auto; }
+    .card { background:var(--card); border:1px solid var(--border); border-radius:18px; box-shadow:var(--shadow); overflow:hidden; }
+    .topbar { padding:20px 22px 14px; border-bottom:1px solid var(--border); background:linear-gradient(180deg,#fff 0%,#f8fbfe 100%); }
+    .topbar h1 { margin:0 0 14px; font-size:28px; line-height:1.2; }
+    .controls { display:flex; flex-wrap:wrap; gap:14px; align-items:end; }
+    .control-group { min-width:280px; }
+    .control-group label { display:block; font-size:13px; font-weight:700; color:var(--muted); margin-bottom:6px; text-transform:uppercase; letter-spacing:.04em; }
+    .control-group select { width:100%; padding:12px 14px; font-size:16px; border:1px solid #bcc9d6; border-radius:12px; background:#fff; color:var(--text); outline:none; }
+    .control-group select:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(31,119,180,.12); }
+    .toggle-label { display:flex!important; align-items:center; gap:8px; cursor:pointer; color:var(--text)!important; font-weight:700!important; text-transform:none!important; letter-spacing:normal!important; margin:0!important; font-size:14px!important; height:45px; }
+    .btn { padding:12px 18px; font-size:14px; font-weight:bold; color:#fff; background-color:var(--accent); border:none; border-radius:12px; cursor:pointer; transition:background-color .2s; height:45px; }
+    .btn:hover { background-color:#155a8a; }
+    .meta { display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
+    .pill { display:inline-flex; align-items:center; gap:8px; background:#f5f8fb; border:1px solid var(--border); border-radius:999px; padding:8px 12px; font-size:14px; color:#22303c; }
+    .pill strong { font-weight:700; }
+    #status { padding:14px 22px 0; font-size:14px; color:var(--muted); min-height:34px; }
+    #chart { width:100%; height:900px; padding:0 8px 8px; }
+    @media (max-width:768px) { body{padding:12px;} .topbar h1{font-size:22px;} #chart{height:760px;} }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card">
-      <div class="topbar">
-        <h1>PETSS Water Level Viewer</h1>
-
-        <div class="controls">
-          <div class="control-group">
-            <label for="stationSelect">Select station</label>
-            <select id="stationSelect"></select>
-          </div>
-
-          <div class="control-group" style="min-width: auto; align-self: end;">
-            <label class="toggle-label" for="rangeToggle">
-              <input type="checkbox" id="rangeToggle" style="width: 18px; height: 18px; cursor: pointer;">
-              Show Daily Tidal Range
-            </label>
-          </div>
-
-          <div class="control-group" style="min-width: auto;">
-            <button id="downloadBtn" class="btn">Download PNG</button>
-          </div>
-        </div>
-
-        <div class="meta">
-          <div class="pill"><strong>Observed window:</strong> last 72 hours</div>
-          <div class="pill"><strong>Forecast band:</strong> likely range</div>
-          <div class="pill"><strong>Datum:</strong> MLLW</div>
-          <div class="pill" id="thresholdPill"><strong>Flood threshold:</strong> --</div>
-        </div>
-      </div>
-
-      <div id="status"></div>
-      <div id="chart"></div>
+  <div class="wrap"><div class="card"><div class="topbar">
+    <h1>PETSS Water Level Viewer</h1>
+    <div class="controls">
+      <div class="control-group"><label for="stationSelect">Select station</label><select id="stationSelect"></select></div>
+      <div class="control-group" style="min-width:170px;"><label for="datumSelect">Display datum</label><select id="datumSelect"><option value="MLLW">MLLW</option><option value="MHHW">MHHW</option></select></div>
+      <div class="control-group" style="min-width:auto;align-self:end;"><label class="toggle-label" for="astroToggle"><input type="checkbox" id="astroToggle" style="width:18px;height:18px;cursor:pointer;">Show Astronomical Tide</label></div>
+      <div class="control-group" style="min-width:auto;align-self:end;"><label class="toggle-label" for="rangeToggle"><input type="checkbox" id="rangeToggle" style="width:18px;height:18px;cursor:pointer;">Show Daily Tidal Range</label></div>
+      <div class="control-group" style="min-width:auto;"><button id="downloadBtn" class="btn">Download PNG</button></div>
     </div>
-  </div>
+    <div class="meta">
+      <div class="pill"><strong>Observed window:</strong> last 72 hours</div>
+      <div class="pill"><strong>Forecast band:</strong> likely range</div>
+      <div class="pill" id="datumPill"><strong>Datum:</strong> MLLW</div>
+      <div class="pill" id="thresholdPill"><strong>Flood threshold:</strong> --</div>
+    </div>
+  </div><div id="status"></div><div id="chart"></div></div></div>
 
-  <script>
-    const observedHoursBack = 72;
-    const STATIONS = {
-      "8747437": {
-        id: "8747437",
-        name: "Waveland, MS",
-        thresholdMLLW: 3.2,
-        datum: "MLLW",
-        file: "data/8747437.csv"
-      },
-      "8760922": {
-        id: "8760922",
-        name: "Pilots Station, LA",
-        thresholdMLLW: 1.5,
-        datum: "MLLW",
-        file: "data/8760922.csv"
-      },
-      "8761305": {
-        id: "8761305",
-        name: "Shell Beach, LA",
-        thresholdMLLW: 3.3,
-        datum: "MLLW",
-        file: "data/8761305.csv"
-      },
-      "8761724": {
-        id: "8761724",
-        name: "Grand Isle, LA",
-        thresholdMLLW: 2.4,
-        datum: "MLLW",
-        file: "data/8761724.csv"
-      },
-      "8762075": {
-        id: "8762075",
-        name: "Port Fourchon, LA",
-        thresholdMLLW: 2.2,
-        datum: "MLLW",
-        file: "data/8762075.csv"
-      },
-      "8761927": {
-        id: "8761927",
-        name: "New Canal Station, LA",
-        thresholdMLLW: 2.0,
-        datum: "MLLW",
-        file: "data/8761927.csv"
-      }
-    };
-    const DEFAULT_STATION_ID = "8761927";
+<script>
+const observedHoursBack = 72;
+const STATIONS = {
+  "8747437": { id:"8747437", name:"Waveland, MS", thresholdMLLW:3.2, datumOffsetMHHW:1.61, file:"data/8747437.csv" },
+  "8760922": { id:"8760922", name:"Pilots Station, LA", thresholdMLLW:1.5, datumOffsetMHHW:1.08, file:"data/8760922.csv" },
+  "8761305": { id:"8761305", name:"Shell Beach, LA", thresholdMLLW:3.3, datumOffsetMHHW:0.97, file:"data/8761305.csv" },
+  "8761724": { id:"8761724", name:"Grand Isle, LA", thresholdMLLW:2.4, datumOffsetMHHW:1.16, file:"data/8761724.csv" },
+  "8762075": { id:"8762075", name:"Port Fourchon, LA", thresholdMLLW:2.2, datumOffsetMHHW:1.17, file:"data/8762075.csv" },
+  "8761927": { id:"8761927", name:"New Canal Station, LA", thresholdMLLW:2.0, datumOffsetMHHW:0.41, file:"data/8761927.csv" }
+};
+const DEFAULT_STATION_ID = "8761927";
+const stationSelect = document.getElementById("stationSelect"), chartEl = document.getElementById("chart"), statusEl = document.getElementById("status"), thresholdPill = document.getElementById("thresholdPill"), datumPill = document.getElementById("datumPill"), rangeToggle = document.getElementById("rangeToggle"), astroToggle = document.getElementById("astroToggle"), datumSelect = document.getElementById("datumSelect");
+let redrawCurrentChart = null;
 
-    const stationSelect = document.getElementById("stationSelect");
-    const chartEl = document.getElementById("chart");
-    const statusEl = document.getElementById("status");
-    const thresholdPill = document.getElementById("thresholdPill");
-    const rangeToggle = document.getElementById("rangeToggle");
-    
-    let redrawCurrentChart = null;
+function displayDatum(){ return datumSelect.value; }
+function convertDatum(v, station){ return v === null || v === undefined ? null : (displayDatum() === "MHHW" ? v - station.datumOffsetMHHW : v); }
+function thresholdForDisplay(station){ return convertDatum(station.thresholdMLLW, station); }
+function fmtLocal(dt){ return dt.toLocaleString([], {year:"numeric",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}); }
+function formatHour(dt){ return dt.toLocaleTimeString([], {hour:"numeric",minute:"2-digit"}).replace(":00",""); }
+function formatPeakTime(dt){ return `${dt.toLocaleDateString([], {weekday:"short"})} ${formatHour(dt)}`; }
+function toNumber(v){ const n = Number(String(v ?? "").trim()); return Number.isFinite(n) ? n : null; }
+function parsePetssTime(s){ s=String(s).trim(); if(s.length!==12)return null; const dt=new Date(Date.UTC(+s.slice(0,4),+s.slice(4,6)-1,+s.slice(6,8),+s.slice(8,10),+s.slice(10,12))); return Number.isNaN(dt.getTime())?null:dt; }
+function clamp(value,min,max){ return Math.max(min,Math.min(max,value)); }
+function getTimeFraction(dt,start,end){ const span=end-start; return span<=0?.5:(dt-start)/span; }
+function setStatus(msg,isError=false){ statusEl.textContent=msg; statusEl.style.color=isError?"#b42318":"#5b6875"; statusEl.style.fontWeight=isError?"700":"400"; }
+function populateStationDropdown(){ Object.values(STATIONS).sort((a,b)=>a.name.localeCompare(b.name)).forEach(station=>{ const opt=document.createElement("option"); opt.value=station.id; opt.textContent=`${station.name} (${station.id})`; if(station.id===DEFAULT_STATION_ID) opt.selected=true; stationSelect.appendChild(opt); }); }
+function assignPeakLabelLayout(peaks, firstTime, lastTime){ const plotWidthPx=Math.max((chartEl.clientWidth||1200)-150,720), labelWidth=150, edgePad=6, laneGap=10, laneOffsets=[-58,-116,-174,-232], lanes=laneOffsets.map(()=>({lastRight:-Infinity})); return peaks.map(peak=>{ const xPx=getTimeFraction(peak.dt,firstTime,lastTime)*plotWidthPx; const boxLeft=clamp(xPx-labelWidth/2,edgePad,Math.max(edgePad,plotWidthPx-labelWidth-edgePad)); const boxRight=boxLeft+labelWidth; let laneIndex=lanes.findIndex(lane=>boxLeft>lane.lastRight+laneGap); if(laneIndex===-1){ laneIndex=0; for(let i=1;i<lanes.length;i++) if(lanes[i].lastRight<lanes[laneIndex].lastRight) laneIndex=i; } lanes[laneIndex].lastRight=Math.max(lanes[laneIndex].lastRight,boxRight); return { ax:Math.round((boxLeft+labelWidth/2)-xPx), ay:laneOffsets[laneIndex] }; }); }
+function buildPeakAnnotation(peak, layoutPos, showRange){ const tPeak=peak.dt, datum=displayDatum(); let contentText=""; if(showRange && peak.dailyRange!==undefined){ const dayName=formatPeakTime(tPeak).split(" ")[0]; contentText=`<span style="font-size:16px;font-weight:600;line-height:1.0;white-space:nowrap;">${dayName} Tidal Range</span><br><span style="font-size:18px;font-weight:600;line-height:1.0;white-space:nowrap;color:#ffffff;">${peak.dailyRange.toFixed(1)} ft</span>`; } else { const tStart=new Date(tPeak.getTime()-2*3600*1000), tEnd=new Date(tPeak.getTime()+2*3600*1000); contentText=`<span style="font-size:18px;font-weight:600;line-height:1.0;white-space:nowrap;">${formatPeakTime(tPeak)}</span><br><span style="font-size:18px;font-weight:600;line-height:1.0;white-space:nowrap;">${peak.value.toFixed(1)} ft ${datum}</span><br><span style="font-size:15px;font-weight:500;color:rgba(0,0,0,.72);line-height:1.0;white-space:nowrap;">Likely ${formatHour(tStart)} - ${formatHour(tEnd)}</span>`; } return { x:peak.dt, y:peak.value, xanchor:"center", yanchor:"bottom", align:"center", showarrow:true, arrowhead:0, arrowwidth:1.35, arrowcolor:"#000", ax:layoutPos.ax, ay:layoutPos.ay, standoff:2, bgcolor:showRange?"#1f77b4":"#5aa2ee", bordercolor:"#000", borderwidth:1, borderpad:5, opacity:1, font:{family:"Segoe UI, Roboto, Helvetica, Arial, sans-serif", color:showRange?"#fff":"#000", size:12}, text:contentText }; }
 
-    function populateStationDropdown() {
-      const stationList = Object.values(STATIONS).sort((a, b) => a.name.localeCompare(b.name));
-      for (const station of stationList) {
-        const opt = document.createElement("option");
-        opt.value = station.id;
-        opt.textContent = `${station.name} (${station.id})`;
-        if (station.id === DEFAULT_STATION_ID) opt.selected = true;
-        stationSelect.appendChild(opt);
-      }
-    }
-
-    function setStatus(msg, isError = false) {
-      statusEl.textContent = msg;
-      statusEl.style.color = isError ? "#b42318" : "#5b6875";
-      statusEl.style.fontWeight = isError ? "700" : "400";
-    }
-
-    function parsePetssTime(s) {
-      s = String(s).trim();
-      if (s.length !== 12) return null;
-
-      const year = Number(s.slice(0, 4));
-      const month = Number(s.slice(4, 6)) - 1;
-      const day = Number(s.slice(6, 8));
-      const hour = Number(s.slice(8, 10));
-      const minute = Number(s.slice(10, 12));
-      const dt = new Date(Date.UTC(year, month, day, hour, minute));
-      return Number.isNaN(dt.getTime()) ? null : dt;
-    }
-
-    function toNumber(v) {
-      if (v === undefined || v === null) return null;
-      const s = String(v).trim();
-      if (s === "") return null;
-      const n = Number(s);
-      return Number.isFinite(n) ? n : null;
-    }
-
-    function fmtLocal(dt) {
-      return dt.toLocaleString([], {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "numeric",
-        minute: "2-digit"
-      });
-    }
-
-    function formatHour(dt) {
-      let s = dt.toLocaleTimeString([], {
-        hour: "numeric",
-        minute: "2-digit"
-      });
-      return s.replace(":00", "");
-    }
-
-    function formatPeakTime(dt) {
-      const day = dt.toLocaleDateString([], { weekday: "short" });
-      return `${day} ${formatHour(dt)}`;
-    }
-
-    function clamp(value, min, max) {
-      return Math.max(min, Math.min(max, value));
-    }
-
-    function getTimeFraction(dt, start, end) {
-      const span = end.getTime() - start.getTime();
-      if (span <= 0) return 0.5;
-      return (dt.getTime() - start.getTime()) / span;
-    }
-
-    function assignPeakLabelLayout(peaks, firstTime, lastTime) {
-      const plotWidthPx = Math.max((chartEl.clientWidth || 1200) - 150, 720);
-      const labelWidth = 150;
-      const edgePad = 6;
-      const laneGap = 10;
-      const laneOffsets = [-58, -116, -174, -232];
-      const lanes = laneOffsets.map(() => ({ lastRight: -Infinity }));
-
-      return peaks.map((peak) => {
-        const frac = getTimeFraction(peak.dt, firstTime, lastTime);
-        const xPx = frac * plotWidthPx;
-
-        const boxLeft = clamp(
-          xPx - labelWidth / 2,
-          edgePad,
-          Math.max(edgePad, plotWidthPx - labelWidth - edgePad)
-        );
-    
-        const boxRight = boxLeft + labelWidth;
-
-        let laneIndex = lanes.findIndex(lane => boxLeft > lane.lastRight + laneGap);
-
-        if (laneIndex === -1) {
-          laneIndex = 0;
-          for (let i = 1; i < lanes.length; i++) {
-            if (lanes[i].lastRight < lanes[laneIndex].lastRight) {
-              laneIndex = i;
-            }
-          }
-        }
-
-        lanes[laneIndex].lastRight = Math.max(lanes[laneIndex].lastRight, boxRight);
-
-        const boxCenterPx = boxLeft + labelWidth / 2;
-        const ax = Math.round(boxCenterPx - xPx);
-        const ay = laneOffsets[laneIndex];
-
-        return { ax, ay };
-      });
-    }
-
-    function buildPeakAnnotation(peak, layoutPos, showRange) {
-      const tPeak = peak.dt;
-      let contentText = "";
-
-      if (showRange && peak.dailyRange !== undefined) {
-        const dayName = formatPeakTime(tPeak).split(' ')[0];
-        contentText = 
-          `<span style="font-size:16px;font-weight:600;line-height:1.0;white-space:nowrap;">${dayName} Tidal Range</span><br>` +
-          `<span style="font-size:18px;font-weight:600;line-height:1.0;white-space:nowrap;color:#ffffff;">${peak.dailyRange.toFixed(1)} ft</span>`;
-      } else {
-        const tStart = new Date(tPeak.getTime() - 2 * 3600 * 1000);
-        const tEnd = new Date(tPeak.getTime() + 2 * 3600 * 1000);
-        contentText =
-          `<span style="font-size:18px;font-weight:600;line-height:1.0;white-space:nowrap;">${formatPeakTime(tPeak)}</span><br>` +
-          `<span style="font-size:18px;font-weight:600;line-height:1.0;white-space:nowrap;">${peak.value.toFixed(1)} ft</span><br>` +
-          `<span style="font-size:15px;font-weight:500;color:rgba(0,0,0,0.72);line-height:1.0;white-space:nowrap;">Likely ${formatHour(tStart)} - ${formatHour(tEnd)}</span>`;
-      }
-
-      return {
-        x: peak.dt,
-        y: peak.value,
-        xanchor: "center",
-        yanchor: "bottom",
-        align: "center",
-        showarrow: true,
-        arrowhead: 0,
-        arrowwidth: 1.35,
-        arrowcolor: "#000000",
-        ax: layoutPos.ax,
-        ay: layoutPos.ay,
-        standoff: 2,
-        bgcolor: showRange ? "#1f77b4" : "#5aa2ee",
-        bordercolor: "#000000",
-        borderwidth: 1,
-        borderpad: 5,
-        opacity: 1,
-        font: {
-          family: "Segoe UI, Roboto, Helvetica, Arial, sans-serif",
-          color: showRange ? "#ffffff" : "#000000",
-          size: 12
-        },
-        text: contentText
+function loadStation(stationId){
+  const station=STATIONS[stationId]; if(!station){ setStatus("Unknown station selected.",true); return; }
+  Plotly.purge("chart"); chartEl.innerHTML="";
+  Papa.parse(`${station.file}?v=${Date.now()}`, { download:true, dynamicTyping:false, skipEmptyLines:true,
+    complete:function(results){
+      const rows=results.data; if(!rows || rows.length<2){ chartEl.innerHTML="<p style='padding:20px;color:#b42318;font-weight:bold;'>CSV loaded, but no usable rows were found.</p>"; setStatus(`No usable data found for ${station.name}.`,true); return; }
+      const dataRows=rows.slice(1), COL_TIME=0, COL_OB=2, COL_ASTRO=3, COL_TWL=5, COL_TWL90P=7, COL_TWL10P=9;
+      const observed=[], astro=[], forecast=[], band=[];
+      for(const row of dataRows){ if(!row || row.length<10) continue; const dt=parsePetssTime(row[COL_TIME]); if(!dt) continue; const ob=toNumber(row[COL_OB]), ast=toNumber(row[COL_ASTRO]), twl=toNumber(row[COL_TWL]), twl90=toNumber(row[COL_TWL90P]), twl10=toNumber(row[COL_TWL10P]); if(ob!==null) observed.push({dt,valueMLLW:ob}); if(ast!==null) astro.push({dt,valueMLLW:ast}); if(twl!==null) forecast.push({dt,valueMLLW:twl}); if(twl10!==null && twl90!==null) band.push({dt,lowMLLW:twl10,highMLLW:twl90}); }
+      observed.sort((a,b)=>a.dt-b.dt); astro.sort((a,b)=>a.dt-b.dt); forecast.sort((a,b)=>a.dt-b.dt); band.sort((a,b)=>a.dt-b.dt);
+      const latestObservedTime=observed.length?observed[observed.length-1].dt:null, observedCutoffTime=latestObservedTime?new Date(latestObservedTime.getTime()-observedHoursBack*3600*1000):null;
+      const filteredObserved=observed.filter(d=>!observedCutoffTime||d.dt>=observedCutoffTime), plotTransitionTime=latestObservedTime||new Date(), filteredForecast=forecast.filter(d=>d.dt>=plotTransitionTime), filteredBand=band.filter(d=>d.dt>=plotTransitionTime), filteredAstro=astro.filter(d=>(!observedCutoffTime||d.dt>=observedCutoffTime) && d.dt<= (forecast.length?forecast[forecast.length-1].dt:d.dt));
+      if(filteredObserved.length===0 && filteredForecast.length===0){ chartEl.innerHTML="<p style='padding:20px;color:#b42318;font-weight:bold;'>CSV loaded, but no observed or future forecast water level values were found.</p>"; setStatus(`No plotted data found for ${station.name}.`,true); return; }
+      const allTimes=[...filteredObserved.map(d=>d.dt),...filteredForecast.map(d=>d.dt)].sort((a,b)=>a-b), firstTime=allTimes[0], lastTime=allTimes[allTimes.length-1];
+      const subtitlePieces=[]; if(latestObservedTime) subtitlePieces.push(`Latest observed: ${fmtLocal(latestObservedTime)}`);
+      const layout={ font:{family:"Segoe UI, Roboto, Helvetica, Arial, sans-serif",color:"#15202b"}, title:{text:`<b>${station.name} Water Levels</b><br><span style="font-size:14px;color:#5b6875;">${subtitlePieces.join(" | ")}</span>`,font:{size:28}}, paper_bgcolor:"#fff", plot_bgcolor:"#fff", hovermode:"closest", margin:{l:80,r:36,t:250,b:170}, xaxis:{tickformat:"%a, %b %-d",tickfont:{size:14},gridcolor:"rgba(0,0,0,.08)",zeroline:false}, yaxis:{tickfont:{size:14},gridcolor:"rgba(0,0,0,.08)",zeroline:false}, legend:{x:.01,y:-.09,xanchor:"left",yanchor:"top",orientation:"h",bgcolor:"rgba(255,255,255,0)",bordercolor:"rgba(0,0,0,0)",borderwidth:0,font:{size:14}} };
+      redrawCurrentChart=function(){
+        const datum=displayDatum(), showRange=rangeToggle.checked, showAstro=astroToggle.checked, threshold=thresholdForDisplay(station);
+        const xObserved=filteredObserved.map(d=>d.dt), yObserved=filteredObserved.map(d=>convertDatum(d.valueMLLW,station));
+        const xForecast=filteredForecast.map(d=>d.dt), yForecast=filteredForecast.map(d=>convertDatum(d.valueMLLW,station));
+        const xBand=filteredBand.map(d=>d.dt), yBandTop=filteredBand.map(d=>convertDatum(d.highMLLW,station)), yBandBottom=filteredBand.map(d=>convertDatum(d.lowMLLW,station));
+        const xAstro=filteredAstro.map(d=>d.dt), yAstro=filteredAstro.map(d=>convertDatum(d.valueMLLW,station));
+        const bandLookup=new Map(filteredBand.map(d=>[d.dt.getTime(),{low:convertDatum(d.lowMLLW,station),high:convertDatum(d.highMLLW,station)}]));
+        const customdataForecast=filteredForecast.map(d=>{const m=bandLookup.get(d.dt.getTime()); return m?[m.low,m.high]:[null,null];});
+        const allPeaks=[]; for(let i=3;i<filteredForecast.length-3;i++){ let isLocalMax=true; for(let j=1;j<=3;j++){ if(filteredForecast[i].valueMLLW<=filteredForecast[i-j].valueMLLW || filteredForecast[i].valueMLLW<=filteredForecast[i+j].valueMLLW){ isLocalMax=false; break; }} if(isLocalMax && (allPeaks.length===0 || (filteredForecast[i].dt-allPeaks[allPeaks.length-1].dt)>8*3600*1000)){ const peakDateStr=filteredForecast[i].dt.toLocaleDateString(), dailyData=filteredForecast.filter(d=>d.dt.toLocaleDateString()===peakDateStr), dailyMax=Math.max(...dailyData.map(d=>d.valueMLLW)), dailyMin=Math.min(...dailyData.map(d=>d.valueMLLW)); allPeaks.push({dt:filteredForecast[i].dt,value:convertDatum(filteredForecast[i].valueMLLW,station),valueMLLW:filteredForecast[i].valueMLLW,dailyRange:dailyMax-dailyMin}); }}
+        const activePeaks=showRange?allPeaks:allPeaks.filter(p=>p.value>=threshold-.5), activePeakLayouts=assignPeakLabelLayout(activePeaks,firstTime,lastTime);
+        thresholdPill.innerHTML=`<strong>Flood threshold:</strong> ${threshold.toFixed(2)} ft ${datum}`; datumPill.innerHTML=`<strong>Datum:</strong> ${datum}`;
+        layout.yaxis.title={text:`Water level in feet (${datum})`,font:{size:18}};
+        layout.annotations=[{xref:"paper",yref:"y",x:.01,y:threshold,xanchor:"left",yanchor:"bottom",text:"<b>Minor Coastal Flooding</b>",showarrow:false,font:{color:"#ff7f0e",size:13},yshift:4}];
+        activePeaks.forEach((p,idx)=>layout.annotations.push(buildPeakAnnotation(p,activePeakLayouts[idx],showRange)));
+        const traces=[
+          {x:[firstTime,lastTime],y:[threshold,threshold],mode:"lines",name:`Flood threshold (${threshold.toFixed(2)} ft ${datum})`,line:{width:3,color:"#ff7f0e",dash:"solid"},hovertemplate:`%{x|%a, %b %-d, %-I:%M %p}<br>Flood threshold: %{y:.2f} ft ${datum}<extra></extra>`},
+          {x:xObserved,y:yObserved,mode:"lines",name:"Observed water level",line:{width:4,color:"#2ca02c"},connectgaps:false,hovertemplate:`%{x|%a, %b %-d, %-I:%M %p}<br>Observed water level: %{y:.2f} ft ${datum}<extra></extra>`},
+          {x:xForecast,y:yForecast,customdata:customdataForecast,mode:"lines",name:"Forecast water level",line:{width:4,color:"#1f77b4"},connectgaps:false,hovertemplate:`%{x|%a, %b %-d, %-I:%M %p}<br>Expected water level: %{y:.2f} ft ${datum}<br>Possible range: %{customdata[0]:.2f} – %{customdata[1]:.2f} ft ${datum}<extra></extra>`},
+          {x:xBand,y:yBandTop,mode:"lines",line:{color:"rgba(0,0,0,0)"},hoverinfo:"skip",showlegend:false,name:"Range upper bound"},
+          {x:xBand,y:yBandBottom,mode:"lines",line:{color:"rgba(0,0,0,0)"},fill:"tonexty",fillcolor:"rgba(31,119,180,.18)",name:"Likely range",hoverinfo:"skip"},
+          {x:activePeaks.map(p=>p.dt),y:activePeaks.map(p=>p.value),mode:"markers",name:"Peak tides",marker:{color:"red",size:8},showlegend:false,hoverinfo:"skip"}
+        ];
+        if(showAstro){ traces.splice(2,0,{x:xAstro,y:yAstro,mode:"lines",name:"Astronomical tide",line:{width:3,color:"#9467bd",dash:"dot"},connectgaps:false,hovertemplate:`%{x|%a, %b %-d, %-I:%M %p}<br>Astronomical tide: %{y:.2f} ft ${datum}<extra></extra>`}); }
+        Plotly.react("chart",traces,layout,{responsive:true,displayModeBar:false,displaylogo:false});
       };
-    }
+      redrawCurrentChart(); setStatus(`Viewing ${station.name}`);
+    }, error:function(err){ chartEl.innerHTML=`<p style="padding:20px;color:#b42318;font-weight:bold;">Failed to load CSV: ${err.message}</p>`; setStatus(`Failed to load ${station.name}.`,true); }
+  });
+}
 
-    function loadStation(stationId) {
-      const station = STATIONS[stationId];
-      if (!station) {
-        setStatus("Unknown station selected.", true);
-        return;
-      }
-
-      thresholdPill.innerHTML = `<strong>Flood threshold:</strong> ${station.thresholdMLLW.toFixed(2)} ft ${station.datum}`;
-      Plotly.purge("chart"); 
-      chartEl.innerHTML = "";
-      
-      Papa.parse(`${station.file}?v=${Date.now()}`, {
-        download: true,
-        dynamicTyping: false,
-        skipEmptyLines: true,
-        complete: function(results) {
-          const rows = results.data;
-
-          if (!rows || rows.length < 2) {
-            chartEl.innerHTML = "<p style='padding:20px;color:#b42318;font-weight:bold;'>CSV loaded, but no usable rows were found.</p>";
-            setStatus(`No usable data found for ${station.name}.`, true);
-            return;
-          }
-
-          const dataRows = rows.slice(1);
-
-          const COL_TIME = 0;
-          const COL_OB = 2;
-          const COL_TWL = 5;
-          const COL_TWL90P = 7;
-          const COL_TWL10P = 9;
-
-          const observed = [];
-          const forecast = [];
-          const band = [];
-
-          for (const row of dataRows) {
-            if (!row || row.length < 10) continue;
-
-            const dt = parsePetssTime(row[COL_TIME]);
-            if (!dt) continue;
-
-            const ob = toNumber(row[COL_OB]);
-            const twl = toNumber(row[COL_TWL]);
-            const twl90 = toNumber(row[COL_TWL90P]);
-            const twl10 = toNumber(row[COL_TWL10P]);
-            
-            if (ob !== null) observed.push({ dt, value: ob });
-            if (twl !== null) forecast.push({ dt, value: twl });
-            if (twl10 !== null && twl90 !== null) band.push({ dt, low: twl10, high: twl90 });
-          }
-
-          observed.sort((a, b) => a.dt - b.dt);
-          forecast.sort((a, b) => a.dt - b.dt);
-          band.sort((a, b) => a.dt - b.dt);
-
-          let latestObservedTime = null;
-          if (observed.length > 0) {
-            latestObservedTime = observed[observed.length - 1].dt;
-          }
-
-          const observedCutoffTime = latestObservedTime
-            ? new Date(latestObservedTime.getTime() - observedHoursBack * 60 * 60 * 1000)
-            : null;
-            
-          const filteredObserved = observed.filter(item => !observedCutoffTime || item.dt >= observedCutoffTime);
-
-          const plotTransitionTime = latestObservedTime || new Date();
-          const filteredForecast = forecast.filter(item => item.dt >= plotTransitionTime);
-          const filteredBand = band.filter(item => item.dt >= plotTransitionTime);
-          
-          const xObserved = filteredObserved.map(d => d.dt);
-          const yObserved = filteredObserved.map(d => d.value);
-
-          const xForecast = filteredForecast.map(d => d.dt);
-          const yForecast = filteredForecast.map(d => d.value);
-
-          const xBand = filteredBand.map(d => d.dt);
-          const yBandTop = filteredBand.map(d => d.high);
-          const yBandBottom = filteredBand.map(d => d.low);
-
-          const bandLookup = new Map(
-            filteredBand.map(d => [d.dt.getTime(), { low: d.low, high: d.high }])
-          );
-          
-          const customdataForecast = filteredForecast.map(d => {
-            const match = bandLookup.get(d.dt.getTime());
-            return match ? [match.low, match.high] : [null, null];
-          });
-          
-          if (xObserved.length === 0 && xForecast.length === 0) {
-            chartEl.innerHTML = "<p style='padding:20px;color:#b42318;font-weight:bold;'>CSV loaded, but no observed or future forecast water level values were found.</p>";
-            setStatus(`No plotted data found for ${station.name}.`, true);
-            return;
-          }
-
-          // Gather ALL local max peaks, regardless of flood threshold
-          const allPeaks = [];
-          for (let i = 3; i < filteredForecast.length - 3; i++) {
-            let isLocalMax = true;
-            for (let j = 1; j <= 3; j++) {
-              if (
-                filteredForecast[i].value <= filteredForecast[i - j].value ||
-                filteredForecast[i].value <= filteredForecast[i + j].value
-              ) {
-                isLocalMax = false;
-                break;
-              }
-            }
-
-            // Only constraint is it's a local max and at least 8 hours away from the previous peak
-            if (isLocalMax) {
-              if (
-                allPeaks.length === 0 ||
-                (filteredForecast[i].dt - allPeaks[allPeaks.length - 1].dt) > 8 * 3600 * 1000
-               ) {
-                const peakDateStr = filteredForecast[i].dt.toLocaleDateString();
-                const dailyData = filteredForecast.filter(d => d.dt.toLocaleDateString() === peakDateStr);
-                const dailyMax = Math.max(...dailyData.map(d => d.value));
-                const dailyMin = Math.min(...dailyData.map(d => d.value));
-                
-                allPeaks.push({
-                    ...filteredForecast[i],
-                    dailyRange: dailyMax - dailyMin
-                });
-              }
-            }
-          }
-
-          const allTimes = [...xObserved, ...xForecast].sort((a, b) => a - b);
-          const firstTime = allTimes[0];
-          const lastTime = allTimes[allTimes.length - 1];
-          
-          const traces = [
-            {
-              x: [firstTime, lastTime],
-              y: [station.thresholdMLLW, station.thresholdMLLW],
-              mode: "lines",
-              name: `Flood threshold (${station.thresholdMLLW.toFixed(2)} ft ${station.datum})`,
-              line: { width: 3, color: "#ff7f0e", dash: "solid" },
-              hovertemplate:
-                `%{x|%a, %b %-d, %-I:%M %p}` +
-                `<br>Flood threshold: %{y:.2f} ft ${station.datum}` +
-                `<extra></extra>`
-            },
-            {
-              x: xObserved,
-              y: yObserved,
-              mode: "lines",
-              name: "Observed water level",
-              line: { width: 4, color: "#2ca02c" },
-              connectgaps: false,
-              hovertemplate:
-                `%{x|%a, %b %-d, %-I:%M %p}` +
-                `<br>Observed water level: %{y:.2f} ft ${station.datum}` +
-                `<extra></extra>`
-            },
-            {
-              x: xForecast,
-              y: yForecast,
-              customdata: customdataForecast,
-              mode: "lines",
-              name: "Forecast water level",
-              line: { width: 4, color: "#1f77b4" },
-              connectgaps: false,
-              hovertemplate:
-                `%{x|%a, %b %-d, %-I:%M %p}` +
-                `<br>Expected water level: %{y:.2f} ft ${station.datum}` +
-                `<br>Possible range: %{customdata[0]:.2f} – %{customdata[1]:.2f} ft ${station.datum}` +
-                `<extra></extra>`
-            },
-            {
-              x: xBand,
-              y: yBandTop,
-              mode: "lines",
-              line: { color: "rgba(0,0,0,0)" },
-              hoverinfo: "skip",
-              showlegend: false,
-              name: "Range upper bound"
-            },
-            {
-              x: xBand,
-              y: yBandBottom,
-              mode: "lines",
-              line: { color: "rgba(0,0,0,0)" },
-              fill: "tonexty",
-              fillcolor: "rgba(31,119,180,0.18)",
-              name: "Likely range",
-              hoverinfo: "skip"
-            },
-            {
-              x: [], // Set dynamically in redrawCurrentChart
-              y: [], // Set dynamically in redrawCurrentChart
-              mode: "markers",
-              name: "Peak tides",
-              marker: { color: "red", size: 8 },
-              showlegend: false,
-              hoverinfo: "skip"
-            }
-          ];
-          
-          const subtitlePieces = [];
-          if (latestObservedTime) {
-            subtitlePieces.push(`Latest observed: ${fmtLocal(latestObservedTime)}`);
-          }
-
-          const layout = {
-            font: {
-              family: "Segoe UI, Roboto, Helvetica, Arial, sans-serif",
-              color: "#15202b"
-            },
-            title: {
-              text:
-                `<b>${station.name} Water Levels</b><br>` +
-                `<span style="font-size:14px;color:#5b6875;">${subtitlePieces.join(" | ")}</span>`,
-              font: { size: 28 }
-            },
-            paper_bgcolor: "#ffffff",
-            plot_bgcolor: "#ffffff",
-            hovermode: "closest",
-            margin: { l: 80, r: 36, t: 250, b: 170 },
-            xaxis: {
-              tickformat: "%a, %b %-d",
-              tickfont: { size: 14 },
-              gridcolor: "rgba(0,0,0,0.08)",
-              zeroline: false
-            },
-            yaxis: {
-              title: { text: `Water level in feet (${station.datum})`, font: { size: 18 } },
-              tickfont: { size: 14 },
-              gridcolor: "rgba(0,0,0,0.08)",
-              zeroline: false
-            },
-            legend: {
-              x: 0.01,
-              y: -0.09,
-              xanchor: "left",
-              yanchor: "top",
-              orientation: "h",
-              bgcolor: "rgba(255,255,255,0)",
-              bordercolor: "rgba(0,0,0,0)",
-              borderwidth: 0,
-              font: { size: 14 }
-            }
-          };
-
-          redrawCurrentChart = function() {
-            const showRange = rangeToggle.checked;
-            
-            // Dynamic Peaks: Show all when toggled on, show only threatening peaks when off
-            const activePeaks = showRange 
-              ? allPeaks 
-              : allPeaks.filter(p => p.value >= (station.thresholdMLLW - 0.5));
-            
-            const activePeakLayouts = assignPeakLabelLayout(activePeaks, firstTime, lastTime);
-
-            // Update red marker coordinates
-            traces[5].x = activePeaks.map(p => p.dt);
-            traces[5].y = activePeaks.map(p => p.value);
-
-            // Base annotations array reset
-            layout.annotations = [
-               {
-                xref: "paper",
-                yref: "y",
-                x: 0.01,
-                y: station.thresholdMLLW,
-                xanchor: "left",
-                yanchor: "bottom",
-                text: "<b>Minor Coastal Flooding</b>",
-                showarrow: false,
-                font: { color: "#ff7f0e", size: 13 },
-                yshift: 4
-              }
-            ];
-
-            activePeaks.forEach((p, idx) => {
-              layout.annotations.push(buildPeakAnnotation(p, activePeakLayouts[idx], showRange));
-            });
-
-            Plotly.react("chart", traces, layout, {
-              responsive: true,
-              displayModeBar: false,
-              displaylogo: false
-            });
-          };
-
-          redrawCurrentChart();
-          setStatus(`Viewing ${station.name}`);
-        },
-        error: function(err) {
-          chartEl.innerHTML = `<p style="padding:20px;color:#b42318;font-weight:bold;">Failed to load CSV: ${err.message}</p>`;
-          setStatus(`Failed to load ${station.name}.`, true);
-        }
-      });
-    }
-
-    populateStationDropdown();
-    
-    stationSelect.addEventListener("change", function() {
-      loadStation(this.value);
-    });
-    
-    rangeToggle.addEventListener("change", function() {
-      if (redrawCurrentChart) redrawCurrentChart();
-    });
-
-    loadStation(DEFAULT_STATION_ID);
-
-    const downloadBtn = document.getElementById("downloadBtn");
-    downloadBtn.addEventListener("click", function() {
-      const currentStationId = stationSelect.value;
-      const stationName = STATIONS[currentStationId].name.replace(/[^a-z0-9]/gi, "_").toLowerCase();
-
-      Plotly.downloadImage("chart", {
-        format: "png",
-        width: 1200,
-        height: 900,
-        filename: `petss_water_level_${stationName}`
-      });
-    });
-  </script>
+populateStationDropdown();
+stationSelect.addEventListener("change",function(){ loadStation(this.value); });
+rangeToggle.addEventListener("change",function(){ if(redrawCurrentChart) redrawCurrentChart(); });
+astroToggle.addEventListener("change",function(){ if(redrawCurrentChart) redrawCurrentChart(); });
+datumSelect.addEventListener("change",function(){ if(redrawCurrentChart) redrawCurrentChart(); });
+loadStation(DEFAULT_STATION_ID);
+document.getElementById("downloadBtn").addEventListener("click",function(){ const currentStationId=stationSelect.value, stationName=STATIONS[currentStationId].name.replace(/[^a-z0-9]/gi,"_").toLowerCase(), datum=displayDatum().toLowerCase(); Plotly.downloadImage("chart",{format:"png",width:1200,height:900,filename:`petss_water_level_${stationName}_${datum}`}); });
+</script>
 </body>
 </html>
