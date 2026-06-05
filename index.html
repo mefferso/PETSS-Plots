@@ -361,7 +361,7 @@
         const tEnd = new Date(tPeak.getTime() + 2 * 3600 * 1000);
         contentText =
           `<span style="font-size:18px;font-weight:600;line-height:1.0;white-space:nowrap;">${formatPeakTime(tPeak)}</span><br>` +
-          `<span style="font-size:18px;font-weight:600;line-height:1.0;white-space:nowrap;">${peak.value.toFixed(1)} ft ${datum}</span><br>` +
+          `<span style="font-size:18px;font-weight:600;line-height:1.0;white-space:nowrap;">${peak.value.toFixed(1)} ft</span><br>` +
           `<span style="font-size:15px;font-weight:500;color:rgba(0,0,0,0.72);line-height:1.0;white-space:nowrap;">Likely ${formatHour(tStart)} - ${formatHour(tEnd)}</span>`;
       }
 
@@ -588,7 +588,7 @@
             const activePeaks = showRange ? allPeaks : allPeaks.filter(p => p.value >= threshold - 0.5);
             const activePeakLayouts = assignPeakLabelLayout(activePeaks, firstTime, lastTime);
 
-            thresholdPill.innerHTML = `<strong>Flood threshold:</strong> ${threshold.toFixed(2)} ft ${datum}`;
+            thresholdPill.innerHTML = `<strong>Flood threshold:</strong> ${threshold.toFixed(2)} ft`;
             datumPill.innerHTML = `<strong>Datum:</strong> ${datum}`;
             layout.yaxis.title = { text: `Water level in feet (${datum})`, font: { size: 18 } };
             layout.annotations = [
@@ -615,7 +615,7 @@
                 x: [firstTime, lastTime],
                 y: [threshold, threshold],
                 mode: "lines",
-                name: `Flood threshold (${threshold.toFixed(2)} ft ${datum})`,
+                name: `Flood threshold (${threshold.toFixed(2)} ft)`,
                 line: { width: 3, color: "#ff7f0e", dash: "solid" },
                 hovertemplate:
                   `%{x|%a, %b %-d, %-I:%M %p}` +
