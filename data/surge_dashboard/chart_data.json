@@ -1,6 +1,6 @@
 {
-  "generated_utc": "2026-06-14T20:44:32Z",
-  "generated_local": "2026-06-14 15:44 CDT",
+  "generated_utc": "2026-06-14T22:03:10Z",
+  "generated_local": "2026-06-14 17:03 CDT",
   "station_name": "New Canal Station, LA",
   "station_id": "8761927",
   "wind_source_station_label": "KNEW / Lakefront Airport NBM hourly text",
@@ -18,14 +18,14 @@
   "headline": "Modest surge signal: forecast surge peaks near 0.40 ft.",
   "summary": {
     "max_surge_ft": 0.4,
-    "max_surge_time_utc": "2026-06-14T14:00:00Z",
-    "max_surge_time_local": "2026-06-14 09:00 CDT",
+    "max_surge_time_utc": "2026-06-14T16:00:00Z",
+    "max_surge_time_local": "2026-06-14 11:00 CDT",
     "max_twl_ft": 1.064,
     "max_twl_time_utc": "2026-06-16T01:00:00Z",
     "max_twl_time_local": "2026-06-15 20:00 CDT",
-    "max_gust_kt": 14.0,
-    "max_gust_time_utc": "2026-06-15T19:00:00Z",
-    "max_gust_time_local": "2026-06-15 14:00 CDT",
+    "max_gust_kt": 13.0,
+    "max_gust_time_utc": "2026-06-15T03:00:00Z",
+    "max_gust_time_local": "2026-06-14 22:00 CDT",
     "next_high_tide": {
       "time_utc": "2026-06-14T23:45:00Z",
       "time_local": "2026-06-14 18:45 CDT",
@@ -44,44 +44,10 @@
     "petss_clean_csv": "data/surge_dashboard/new_canal_petss_clean.csv",
     "hilo_json": "data/surge_dashboard/new_canal_hilo.json"
   },
-  "now_utc": "2026-06-14T20:44:32Z",
-  "now_local": "2026-06-14 15:44 CDT",
+  "now_utc": "2026-06-14T22:03:10Z",
+  "now_local": "2026-06-14 17:03 CDT",
   "series_count": 91,
   "series": [
-    {
-      "time_utc": "2026-06-14T14:00:00Z",
-      "time_local": "2026-06-14 09:00 CDT",
-      "surge_ft": 0.4,
-      "surge10_ft": 0.4,
-      "surge90_ft": 0.4,
-      "tide_ft": 0.046,
-      "twl_ft": 0.38,
-      "twl10_ft": 0.38,
-      "twl90_ft": 0.38,
-      "obs_ft": 0.38,
-      "bias_ft": -0.066,
-      "wind_dir_deg": null,
-      "wind_speed_kt": null,
-      "wind_gust_kt": null,
-      "is_favorable_wind": false
-    },
-    {
-      "time_utc": "2026-06-14T15:00:00Z",
-      "time_local": "2026-06-14 10:00 CDT",
-      "surge_ft": 0.4,
-      "surge10_ft": 0.4,
-      "surge90_ft": 0.4,
-      "tide_ft": 0.1,
-      "twl_ft": 0.449,
-      "twl10_ft": 0.449,
-      "twl90_ft": 0.449,
-      "obs_ft": 0.449,
-      "bias_ft": -0.051,
-      "wind_dir_deg": null,
-      "wind_speed_kt": null,
-      "wind_gust_kt": null,
-      "is_favorable_wind": false
-    },
     {
       "time_utc": "2026-06-14T16:00:00Z",
       "time_local": "2026-06-14 11:00 CDT",
@@ -128,10 +94,10 @@
       "twl90_ft": 0.61,
       "obs_ft": 0.61,
       "bias_ft": -0.099,
-      "wind_dir_deg": 330,
-      "wind_speed_kt": 5.0,
-      "wind_gust_kt": 7.0,
-      "is_favorable_wind": true
+      "wind_dir_deg": null,
+      "wind_speed_kt": null,
+      "wind_gust_kt": null,
+      "is_favorable_wind": false
     },
     {
       "time_utc": "2026-06-14T19:00:00Z",
@@ -145,10 +111,10 @@
       "twl90_ft": 0.709,
       "obs_ft": null,
       "bias_ft": -0.078,
-      "wind_dir_deg": 330,
-      "wind_speed_kt": 5.0,
-      "wind_gust_kt": 7.0,
-      "is_favorable_wind": true
+      "wind_dir_deg": null,
+      "wind_speed_kt": null,
+      "wind_gust_kt": null,
+      "is_favorable_wind": false
     },
     {
       "time_utc": "2026-06-14T20:00:00Z",
@@ -162,8 +128,8 @@
       "twl90_ft": 0.806,
       "obs_ft": null,
       "bias_ft": -0.057,
-      "wind_dir_deg": 290,
-      "wind_speed_kt": 5.0,
+      "wind_dir_deg": 50,
+      "wind_speed_kt": 6.0,
       "wind_gust_kt": 9.0,
       "is_favorable_wind": false
     },
@@ -179,7 +145,7 @@
       "twl90_ft": 0.894,
       "obs_ft": null,
       "bias_ft": -0.036,
-      "wind_dir_deg": 220,
+      "wind_dir_deg": 50,
       "wind_speed_kt": 6.0,
       "wind_gust_kt": 9.0,
       "is_favorable_wind": false
@@ -196,8 +162,8 @@
       "twl90_ft": 0.964,
       "obs_ft": null,
       "bias_ft": -0.015,
-      "wind_dir_deg": 230,
-      "wind_speed_kt": 7.0,
+      "wind_dir_deg": 200,
+      "wind_speed_kt": 8.0,
       "wind_gust_kt": 10.0,
       "is_favorable_wind": false
     },
@@ -213,9 +179,9 @@
       "twl90_ft": 1.013,
       "obs_ft": null,
       "bias_ft": 0.006,
-      "wind_dir_deg": 240,
-      "wind_speed_kt": 9.0,
-      "wind_gust_kt": 10.0,
+      "wind_dir_deg": 200,
+      "wind_speed_kt": 10.0,
+      "wind_gust_kt": 11.0,
       "is_favorable_wind": false
     },
     {
@@ -249,7 +215,7 @@
       "bias_ft": 0.048,
       "wind_dir_deg": 210,
       "wind_speed_kt": 10.0,
-      "wind_gust_kt": 11.0,
+      "wind_gust_kt": 12.0,
       "is_favorable_wind": false
     },
     {
@@ -265,7 +231,7 @@
       "obs_ft": null,
       "bias_ft": 0.069,
       "wind_dir_deg": 220,
-      "wind_speed_kt": 10.0,
+      "wind_speed_kt": 11.0,
       "wind_gust_kt": 12.0,
       "is_favorable_wind": false
     },
@@ -366,7 +332,7 @@
       "twl90_ft": 0.585,
       "obs_ft": null,
       "bias_ft": 0.153,
-      "wind_dir_deg": 230,
+      "wind_dir_deg": 240,
       "wind_speed_kt": 9.0,
       "wind_gust_kt": 11.0,
       "is_favorable_wind": false
@@ -383,7 +349,7 @@
       "twl90_ft": 0.528,
       "obs_ft": null,
       "bias_ft": 0.153,
-      "wind_dir_deg": 230,
+      "wind_dir_deg": 240,
       "wind_speed_kt": 9.0,
       "wind_gust_kt": 11.0,
       "is_favorable_wind": false
@@ -402,7 +368,7 @@
       "bias_ft": 0.153,
       "wind_dir_deg": 240,
       "wind_speed_kt": 9.0,
-      "wind_gust_kt": 11.0,
+      "wind_gust_kt": 10.0,
       "is_favorable_wind": false
     },
     {
@@ -435,7 +401,7 @@
       "obs_ft": null,
       "bias_ft": 0.153,
       "wind_dir_deg": 250,
-      "wind_speed_kt": 8.0,
+      "wind_speed_kt": 9.0,
       "wind_gust_kt": 10.0,
       "is_favorable_wind": false
     },
@@ -487,7 +453,7 @@
       "bias_ft": 0.153,
       "wind_dir_deg": 290,
       "wind_speed_kt": 9.0,
-      "wind_gust_kt": 11.0,
+      "wind_gust_kt": 10.0,
       "is_favorable_wind": false
     },
     {
@@ -553,10 +519,10 @@
       "twl90_ft": 0.756,
       "obs_ft": null,
       "bias_ft": 0.153,
-      "wind_dir_deg": 320,
+      "wind_dir_deg": 310,
       "wind_speed_kt": 9.0,
-      "wind_gust_kt": 14.0,
-      "is_favorable_wind": true
+      "wind_gust_kt": 13.0,
+      "is_favorable_wind": false
     },
     {
       "time_utc": "2026-06-15T20:00:00Z",
@@ -570,10 +536,10 @@
       "twl90_ft": 0.838,
       "obs_ft": null,
       "bias_ft": 0.153,
-      "wind_dir_deg": 320,
+      "wind_dir_deg": 280,
       "wind_speed_kt": 9.0,
-      "wind_gust_kt": 14.0,
-      "is_favorable_wind": true
+      "wind_gust_kt": 13.0,
+      "is_favorable_wind": false
     },
     {
       "time_utc": "2026-06-15T21:00:00Z",
@@ -587,10 +553,10 @@
       "twl90_ft": 0.916,
       "obs_ft": null,
       "bias_ft": 0.153,
-      "wind_dir_deg": null,
-      "wind_speed_kt": null,
-      "wind_gust_kt": null,
-      "is_favorable_wind": false
+      "wind_dir_deg": 340,
+      "wind_speed_kt": 9.0,
+      "wind_gust_kt": 13.0,
+      "is_favorable_wind": true
     },
     {
       "time_utc": "2026-06-15T22:00:00Z",
@@ -604,10 +570,10 @@
       "twl90_ft": 0.981,
       "obs_ft": null,
       "bias_ft": 0.153,
-      "wind_dir_deg": null,
-      "wind_speed_kt": null,
-      "wind_gust_kt": null,
-      "is_favorable_wind": false
+      "wind_dir_deg": 340,
+      "wind_speed_kt": 9.0,
+      "wind_gust_kt": 13.0,
+      "is_favorable_wind": true
     },
     {
       "time_utc": "2026-06-15T23:00:00Z",
@@ -1594,6 +1560,40 @@
       "wind_speed_kt": null,
       "wind_gust_kt": null,
       "is_favorable_wind": false
+    },
+    {
+      "time_utc": "2026-06-18T09:00:00Z",
+      "time_local": "2026-06-18 04:00 CDT",
+      "surge_ft": 0.3,
+      "surge10_ft": 0.3,
+      "surge90_ft": 0.2,
+      "tide_ft": 0.302,
+      "twl_ft": 0.755,
+      "twl10_ft": 0.755,
+      "twl90_ft": 0.655,
+      "obs_ft": null,
+      "bias_ft": 0.153,
+      "wind_dir_deg": null,
+      "wind_speed_kt": null,
+      "wind_gust_kt": null,
+      "is_favorable_wind": false
+    },
+    {
+      "time_utc": "2026-06-18T10:00:00Z",
+      "time_local": "2026-06-18 05:00 CDT",
+      "surge_ft": 0.3,
+      "surge10_ft": 0.3,
+      "surge90_ft": 0.2,
+      "tide_ft": 0.232,
+      "twl_ft": 0.685,
+      "twl10_ft": 0.685,
+      "twl90_ft": 0.585,
+      "obs_ft": null,
+      "bias_ft": 0.153,
+      "wind_dir_deg": null,
+      "wind_speed_kt": null,
+      "wind_gust_kt": null,
+      "is_favorable_wind": false
     }
   ],
   "hilo_markers": [
@@ -1642,16 +1642,10 @@
   ],
   "favorable_periods": [
     {
-      "start_utc": "2026-06-14T18:00:00Z",
-      "end_utc": "2026-06-14T20:00:00Z",
-      "start_local": "2026-06-14 13:00 CDT",
-      "end_local": "2026-06-14 15:00 CDT"
-    },
-    {
-      "start_utc": "2026-06-15T19:00:00Z",
-      "end_utc": "2026-06-15T21:00:00Z",
-      "start_local": "2026-06-15 14:00 CDT",
-      "end_local": "2026-06-15 16:00 CDT"
+      "start_utc": "2026-06-15T21:00:00Z",
+      "end_utc": "2026-06-15T23:00:00Z",
+      "start_local": "2026-06-15 16:00 CDT",
+      "end_local": "2026-06-15 18:00 CDT"
     }
   ]
 }
