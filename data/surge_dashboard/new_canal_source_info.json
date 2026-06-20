@@ -1,7 +1,7 @@
 {
   "station_id": "8761927",
   "station_name": "New Canal Station, LA",
-  "source_file_in_archive": "extracted/petss.20260620/t00z.gefs_csv/8761927.csv",
+  "source_file_in_archive": "extracted/petss.20260620/t06z.gefs_csv/8761927.csv",
   "raw_output_file": "data/surge_dashboard/new_canal_petss_raw.txt",
   "clean_output_file": "data/surge_dashboard/new_canal_petss_clean.csv"
 }
