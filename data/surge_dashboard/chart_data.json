@@ -1,6 +1,6 @@
 {
-  "generated_utc": "2026-07-18T11:27:48Z",
-  "generated_local": "2026-07-18 06:27 CDT",
+  "generated_utc": "2026-07-18T12:11:49Z",
+  "generated_local": "2026-07-18 07:11 CDT",
   "station_name": "New Canal Station, LA",
   "station_id": "8761927",
   "wind_source_station_label": "KNEW / Lakefront Airport NBM hourly text",
@@ -34,27 +34,10 @@
     "petss_clean_csv": "data/surge_dashboard/new_canal_petss_clean.csv",
     "hilo_json": "data/surge_dashboard/new_canal_hilo.json"
   },
-  "now_utc": "2026-07-18T11:27:48Z",
-  "now_local": "2026-07-18 06:27 CDT",
+  "now_utc": "2026-07-18T12:11:49Z",
+  "now_local": "2026-07-18 07:11 CDT",
   "series_count": 91,
   "series": [
-    {
-      "time_utc": "2026-07-18T05:00:00Z",
-      "time_local": "2026-07-18 00:00 CDT",
-      "surge_ft": 0.2,
-      "surge10_ft": 0.2,
-      "surge90_ft": 0.2,
-      "tide_ft": 0.451,
-      "twl_ft": 0.38,
-      "twl10_ft": 0.38,
-      "twl90_ft": 0.38,
-      "obs_ft": 0.38,
-      "bias_ft": -0.271,
-      "wind_dir_deg": null,
-      "wind_speed_kt": null,
-      "wind_gust_kt": null,
-      "is_favorable_wind": false
-    },
     {
       "time_utc": "2026-07-18T06:00:00Z",
       "time_local": "2026-07-18 01:00 CDT",
@@ -118,9 +101,9 @@
       "twl90_ft": 0.227,
       "obs_ft": null,
       "bias_ft": -0.294,
-      "wind_dir_deg": 300,
-      "wind_speed_kt": 10.0,
-      "wind_gust_kt": 13.0,
+      "wind_dir_deg": null,
+      "wind_speed_kt": null,
+      "wind_gust_kt": null,
       "is_favorable_wind": false
     },
     {
@@ -135,7 +118,7 @@
       "twl90_ft": 0.19,
       "obs_ft": null,
       "bias_ft": -0.292,
-      "wind_dir_deg": 300,
+      "wind_dir_deg": 310,
       "wind_speed_kt": 10.0,
       "wind_gust_kt": 13.0,
       "is_favorable_wind": false
@@ -152,7 +135,7 @@
       "twl90_ft": 0.156,
       "obs_ft": null,
       "bias_ft": -0.289,
-      "wind_dir_deg": 300,
+      "wind_dir_deg": 310,
       "wind_speed_kt": 10.0,
       "wind_gust_kt": 13.0,
       "is_favorable_wind": false
@@ -186,10 +169,10 @@
       "twl90_ft": 0.111,
       "obs_ft": null,
       "bias_ft": -0.283,
-      "wind_dir_deg": 310,
+      "wind_dir_deg": 320,
       "wind_speed_kt": 10.0,
       "wind_gust_kt": 13.0,
-      "is_favorable_wind": false
+      "is_favorable_wind": true
     },
     {
       "time_utc": "2026-07-18T14:00:00Z",
@@ -390,7 +373,7 @@
       "twl90_ft": 0.295,
       "obs_ft": null,
       "bias_ft": -0.269,
-      "wind_dir_deg": 310,
+      "wind_dir_deg": 300,
       "wind_speed_kt": 7.0,
       "wind_gust_kt": 8.0,
       "is_favorable_wind": false
@@ -509,7 +492,7 @@
       "twl90_ft": 0.259,
       "obs_ft": null,
       "bias_ft": -0.269,
-      "wind_dir_deg": 290,
+      "wind_dir_deg": 300,
       "wind_speed_kt": 10.0,
       "wind_gust_kt": 13.0,
       "is_favorable_wind": false
@@ -577,9 +560,9 @@
       "twl90_ft": 0.193,
       "obs_ft": null,
       "bias_ft": -0.269,
-      "wind_dir_deg": null,
-      "wind_speed_kt": null,
-      "wind_gust_kt": null,
+      "wind_dir_deg": 310,
+      "wind_speed_kt": 11.0,
+      "wind_gust_kt": 14.0,
       "is_favorable_wind": false
     },
     {
@@ -1584,14 +1567,31 @@
       "wind_speed_kt": null,
       "wind_gust_kt": null,
       "is_favorable_wind": false
+    },
+    {
+      "time_utc": "2026-07-22T00:00:00Z",
+      "time_local": "2026-07-21 19:00 CDT",
+      "surge_ft": 0.3,
+      "surge10_ft": 0.5,
+      "surge90_ft": 0.2,
+      "tide_ft": 0.352,
+      "twl_ft": 0.383,
+      "twl10_ft": 0.583,
+      "twl90_ft": 0.283,
+      "obs_ft": null,
+      "bias_ft": -0.269,
+      "wind_dir_deg": null,
+      "wind_speed_kt": null,
+      "wind_gust_kt": null,
+      "is_favorable_wind": false
     }
   ],
   "hilo_markers": [],
   "favorable_periods": [
     {
-      "start_utc": "2026-07-18T14:00:00Z",
+      "start_utc": "2026-07-18T13:00:00Z",
       "end_utc": "2026-07-18T17:00:00Z",
-      "start_local": "2026-07-18 09:00 CDT",
+      "start_local": "2026-07-18 08:00 CDT",
       "end_local": "2026-07-18 12:00 CDT"
     }
   ]
