@@ -1,6 +1,6 @@
 {
-  "generated_utc": "2026-07-22T22:55:02Z",
-  "generated_local": "2026-07-22 17:55 CDT",
+  "generated_utc": "2026-07-22T23:55:26Z",
+  "generated_local": "2026-07-22 18:55 CDT",
   "station_name": "New Canal Station, LA",
   "station_id": "8761927",
   "wind_source_station_label": "KNEW / Lakefront Airport NBM hourly text",
@@ -44,27 +44,10 @@
     "petss_clean_csv": "data/surge_dashboard/new_canal_petss_clean.csv",
     "hilo_json": "data/surge_dashboard/new_canal_hilo.json"
   },
-  "now_utc": "2026-07-22T22:55:02Z",
-  "now_local": "2026-07-22 17:55 CDT",
+  "now_utc": "2026-07-22T23:55:26Z",
+  "now_local": "2026-07-22 18:55 CDT",
   "series_count": 91,
   "series": [
-    {
-      "time_utc": "2026-07-22T16:00:00Z",
-      "time_local": "2026-07-22 11:00 CDT",
-      "surge_ft": 0.8,
-      "surge10_ft": 0.9,
-      "surge90_ft": 0.8,
-      "tide_ft": 0.44,
-      "twl_ft": 2.118,
-      "twl10_ft": 2.218,
-      "twl90_ft": 2.118,
-      "obs_ft": 2.118,
-      "bias_ft": 0.878,
-      "wind_dir_deg": null,
-      "wind_speed_kt": null,
-      "wind_gust_kt": null,
-      "is_favorable_wind": false
-    },
     {
       "time_utc": "2026-07-22T17:00:00Z",
       "time_local": "2026-07-22 12:00 CDT",
@@ -1594,6 +1577,23 @@
       "wind_speed_kt": null,
       "wind_gust_kt": null,
       "is_favorable_wind": false
+    },
+    {
+      "time_utc": "2026-07-26T11:00:00Z",
+      "time_local": "2026-07-26 06:00 CDT",
+      "surge_ft": 0.8,
+      "surge10_ft": 0.9,
+      "surge90_ft": 0.8,
+      "tide_ft": 0.104,
+      "twl_ft": 0.919,
+      "twl10_ft": 1.019,
+      "twl90_ft": 0.919,
+      "obs_ft": null,
+      "bias_ft": 0.015,
+      "wind_dir_deg": null,
+      "wind_speed_kt": null,
+      "wind_gust_kt": null,
+      "is_favorable_wind": false
     }
   ],
   "hilo_markers": [
@@ -1638,6 +1638,12 @@
       "time_local": "2026-07-25 16:53 CDT",
       "type": "H",
       "value_ft": 0.609
+    },
+    {
+      "time_utc": "2026-07-26T10:27:00Z",
+      "time_local": "2026-07-26 05:27 CDT",
+      "type": "L",
+      "value_ft": 0.107
     }
   ],
   "favorable_periods": []
