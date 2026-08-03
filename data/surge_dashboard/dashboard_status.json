@@ -1,6 +1,6 @@
 {
-  "generated_utc": "2026-08-03T08:29:07Z",
-  "generated_local": "2026-08-03 03:29 CDT",
+  "generated_utc": "2026-08-03T11:56:30Z",
+  "generated_local": "2026-08-03 06:56 CDT",
   "headline": "Weak surge signal: forecast surge peaks near 0.00 ft.",
   "series_count": 91,
   "max_surge_ft": 0.0,
@@ -13,9 +13,9 @@
     "value_ft": 0.474
   },
   "next_low_tide": {
-    "time_utc": "2026-08-03T10:33:00Z",
-    "time_local": "2026-08-03 05:33 CDT",
+    "time_utc": "2026-08-04T06:58:00Z",
+    "time_local": "2026-08-04 01:58 CDT",
     "type": "L",
-    "value_ft": 0.351
+    "value_ft": 0.327
   }
 }
