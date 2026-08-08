@@ -1,6 +1,6 @@
 {
-  "generated_utc": "2026-08-08T17:00:12Z",
-  "generated_local": "2026-08-08 12:00 CDT",
+  "generated_utc": "2026-08-08T17:54:21Z",
+  "generated_local": "2026-08-08 12:54 CDT",
   "station_name": "New Canal Station, LA",
   "station_id": "8761927",
   "wind_source_station_label": "KNEW / Lakefront Airport NBM hourly text",
@@ -44,8 +44,8 @@
     "petss_clean_csv": "data/surge_dashboard/new_canal_petss_clean.csv",
     "hilo_json": "data/surge_dashboard/new_canal_hilo.json"
   },
-  "now_utc": "2026-08-08T17:00:12Z",
-  "now_local": "2026-08-08 12:00 CDT",
+  "now_utc": "2026-08-08T17:54:21Z",
+  "now_local": "2026-08-08 12:54 CDT",
   "series_count": 91,
   "series": [
     {
