@@ -1,8 +1,8 @@
 {
-  "fetched_utc": "2026-08-18T23:52:53Z",
+  "fetched_utc": "2026-08-19T01:44:19Z",
   "station": "KNEW",
-  "nbm_cycle_time_utc": "2026-08-18T23:00:00Z",
-  "source_url": "https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20260818/23/text/blend_nbhtx.t23z",
+  "nbm_cycle_time_utc": "2026-08-19T00:00:00Z",
+  "source_url": "https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20260819/00/text/blend_nbhtx.t00z",
   "raw_station_block_file": "data/surge_dashboard/knew_nbm_raw.txt",
   "parsed_csv_file": "data/surge_dashboard/knew_nbm_hourly.csv"
 }
