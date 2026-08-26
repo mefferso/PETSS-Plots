@@ -1,6 +1,6 @@
 {
-  "generated_utc": "2026-08-26T10:26:07Z",
-  "generated_local": "2026-08-26 05:26 CDT",
+  "generated_utc": "2026-08-26T10:59:25Z",
+  "generated_local": "2026-08-26 05:59 CDT",
   "station_name": "New Canal Station, LA",
   "station_id": "8761927",
   "wind_source_station_label": "KNEW / Lakefront Airport NBM hourly text",
@@ -33,10 +33,10 @@
       "value_ft": 0.795
     },
     "next_low_tide": {
-      "time_utc": "2026-08-26T10:58:00Z",
-      "time_local": "2026-08-26 05:58 CDT",
+      "time_utc": "2026-08-27T11:16:00Z",
+      "time_local": "2026-08-27 06:16 CDT",
       "type": "L",
-      "value_ft": 0.364
+      "value_ft": 0.401
     }
   },
   "source_files": {
@@ -44,8 +44,8 @@
     "petss_clean_csv": "data/surge_dashboard/new_canal_petss_clean.csv",
     "hilo_json": "data/surge_dashboard/new_canal_hilo.json"
   },
-  "now_utc": "2026-08-26T10:26:07Z",
-  "now_local": "2026-08-26 05:26 CDT",
+  "now_utc": "2026-08-26T10:59:25Z",
+  "now_local": "2026-08-26 05:59 CDT",
   "series_count": 91,
   "series": [
     {
