@@ -228,20 +228,43 @@
     const chartEl = document.getElementById("chart");
     const statusEl = document.getElementById("status");
     const thresholdPill = document.getElementById("thresholdPill");
-    const datumPill = document.getElementById("datumPill");
-    const rangeToggle = document.getElementById("rangeToggle");
-    const astroToggle = document.getElementById("astroToggle");
-    const datumSelect = document.getElementById("datumSelect");
+    const toggleForecastRange = document.getElementById("toggleForecastRange");
+    let currentAnnotationContext = null;
 
-    let redrawCurrentChart = null;
+    function isStrictLocalExtrema(series, idx, neighborhood, kind) {
+      const curr = series[idx]?.value;
+      if (curr === null || curr === undefined) return false;
 
-    function displayDatum() {
-      return datumSelect.value;
+      for (let j = 1; j <= neighborhood; j++) {
+        const left = series[idx - j]?.value;
+        const right = series[idx + j]?.value;
+        if (left === null || right === null || left === undefined || right === undefined) return false;
+
+        if (kind === "max") {
+          if (curr <= left || curr <= right) return false;
+        } else if (kind === "min") {
+          if (curr >= left || curr >= right) return false;
+        }
+      }
+      return true;
     }
 
-    function convertDatum(valueMLLW, station) {
-      if (valueMLLW === null || valueMLLW === undefined) return null;
-      return displayDatum() === "MHHW" ? valueMLLW - station.datumOffsetMHHW : valueMLLW;
+    function getForecastPeakRange(peak, forecastSeries, neighborhood = 3) {
+      const peakIndex = forecastSeries.findIndex(item => item.dt.getTime() === peak.dt.getTime());
+      if (peakIndex <= neighborhood) return null;
+
+      let trough = null;
+      for (let i = peakIndex - 1; i >= neighborhood; i--) {
+        if (isStrictLocalExtrema(forecastSeries, i, neighborhood, "min")) {
+          trough = forecastSeries[i];
+          break;
+        }
+      }
+
+      if (!trough) return null;
+      const range = peak.value - trough.value;
+      if (!Number.isFinite(range) || range <= 0) return null;
+      return range;
     }
 
     function thresholdForDisplay(station) {
@@ -346,24 +369,13 @@
       });
     }
 
-    function buildPeakAnnotation(peak, layoutPos, showRange) {
+    function buildPeakAnnotation(peak, layoutPos, rangeFt, showRange) {
       const tPeak = peak.dt;
-      const datum = displayDatum();
-      let contentText = "";
-
-      if (showRange && peak.dailyRange !== undefined) {
-        const dayName = formatPeakTime(tPeak).split(" ")[0];
-        contentText =
-          `<span style="font-size:16px;font-weight:600;line-height:1.0;white-space:nowrap;">${dayName} Tidal Range</span><br>` +
-          `<span style="font-size:18px;font-weight:600;line-height:1.0;white-space:nowrap;color:#ffffff;">${peak.dailyRange.toFixed(1)} ft</span>`;
-      } else {
-        const tStart = new Date(tPeak.getTime() - 2 * 3600 * 1000);
-        const tEnd = new Date(tPeak.getTime() + 2 * 3600 * 1000);
-        contentText =
-          `<span style="font-size:18px;font-weight:600;line-height:1.0;white-space:nowrap;">${formatPeakTime(tPeak)}</span><br>` +
-          `<span style="font-size:18px;font-weight:600;line-height:1.0;white-space:nowrap;">${peak.value.toFixed(1)} ft</span><br>` +
-          `<span style="font-size:15px;font-weight:500;color:rgba(0,0,0,0.72);line-height:1.0;white-space:nowrap;">Likely ${formatHour(tStart)} - ${formatHour(tEnd)}</span>`;
-      }
+      const tStart = new Date(tPeak.getTime() - 2 * 3600 * 1000);
+      const tEnd = new Date(tPeak.getTime() + 2 * 3600 * 1000);
+      const rangeLine = showRange && rangeFt !== null
+        ? `<br><span style="font-size:15px;font-weight:600;line-height:1.0;white-space:nowrap;">Range ${rangeFt.toFixed(1)} ft</span>`
+        : "";
 
       return {
         x: peak.dt,
@@ -388,8 +400,36 @@
           color: showRange ? "#ffffff" : "#000000",
           size: 12
         },
-        text: contentText
+        text:
+          `<span style="font-size:18px;font-weight:600;line-height:1.0;white-space:nowrap;">${formatPeakTime(tPeak)}</span><br>` +
+          `<span style="font-size:18px;font-weight:600;line-height:1.0;white-space:nowrap;">${peak.value.toFixed(1)} ft</span><br>` +
+          `<span style="font-size:15px;font-weight:500;color:rgba(0,0,0,0.72);line-height:1.0;white-space:nowrap;">Likely ${formatHour(tStart)} - ${formatHour(tEnd)}</span>` +
+          rangeLine
       };
+    }
+
+    function buildChartAnnotations(station, peaks, peakLayouts, forecastSeries, showRange) {
+      const annotations = [
+        {
+          xref: "paper",
+          yref: "y",
+          x: 0.01,
+          y: station.thresholdMLLW,
+          xanchor: "left",
+          yanchor: "bottom",
+          text: "<b>Minor Coastal Flooding</b>",
+          showarrow: false,
+          font: { color: "#ff7f0e", size: 13 },
+          yshift: 4
+        }
+      ];
+
+      peaks.forEach((peak, idx) => {
+        const rangeFt = getForecastPeakRange(peak, forecastSeries, 3);
+        annotations.push(buildPeakAnnotation(peak, peakLayouts[idx], rangeFt, showRange));
+      });
+
+      return annotations;
     }
 
     function loadStation(stationId) {
@@ -399,7 +439,9 @@
         return;
       }
 
-      Plotly.purge("chart");
+      currentAnnotationContext = null;
+      toggleForecastRange.checked = false;
+      thresholdPill.innerHTML = `<strong>Flood threshold:</strong> ${station.thresholdMLLW.toFixed(2)} ft ${station.datum}`;
       chartEl.innerHTML = "";
 
       Papa.parse(`${station.file}?v=${Date.now()}`, {
@@ -472,7 +514,11 @@
             (!plotEndTime || item.dt <= plotEndTime)
           );
 
-          if (filteredObserved.length === 0 && filteredForecast.length === 0) {
+          const customdataForecast = filteredForecast.map(d => {
+            const match = bandLookup.get(d.dt.getTime());
+            return match ? [match.low, match.high] : [null, null];
+          });
+          if (xObserved.length === 0 && xForecast.length === 0) {
             chartEl.innerHTML = "<p style='padding:20px;color:#b42318;font-weight:bold;'>CSV loaded, but no observed or future forecast water level values were found.</p>";
             setStatus(`No plotted data found for ${station.name}.`, true);
             return;
@@ -523,184 +569,26 @@
               bordercolor: "rgba(0,0,0,0)",
               borderwidth: 0,
               font: { size: 14 }
-            }
+            },
+            annotations: buildChartAnnotations(
+              station,
+              peaks,
+              peakLayouts,
+              filteredForecast,
+              toggleForecastRange.checked
+            )
           };
 
-          redrawCurrentChart = function() {
-            const datum = displayDatum();
-            const showRange = rangeToggle.checked;
-            const showAstro = astroToggle.checked;
-            const threshold = thresholdForDisplay(station);
+          Plotly.newPlot("chart", traces, layout, {
+            responsive: true,
+            displayModeBar: false,
+            displaylogo: false
+          });
 
-            const xObserved = filteredObserved.map(d => d.dt);
-            const yObserved = filteredObserved.map(d => convertDatum(d.valueMLLW, station));
-            const xForecast = filteredForecast.map(d => d.dt);
-            const yForecast = filteredForecast.map(d => convertDatum(d.valueMLLW, station));
-            const xBand = filteredBand.map(d => d.dt);
-            const yBandTop = filteredBand.map(d => convertDatum(d.highMLLW, station));
-            const yBandBottom = filteredBand.map(d => convertDatum(d.lowMLLW, station));
-            const xAstro = filteredAstro.map(d => d.dt);
-            const yAstro = filteredAstro.map(d => convertDatum(d.valueMLLW, station));
-
-            const bandLookup = new Map(
-              filteredBand.map(d => [d.dt.getTime(), {
-                low: convertDatum(d.lowMLLW, station),
-                high: convertDatum(d.highMLLW, station)
-              }])
-            );
-
-            const customdataForecast = filteredForecast.map(d => {
-              const match = bandLookup.get(d.dt.getTime());
-              return match ? [match.low, match.high] : [null, null];
-            });
-
-            const allPeaks = [];
-            for (let i = 3; i < filteredForecast.length - 3; i++) {
-              let isLocalMax = true;
-              for (let j = 1; j <= 3; j++) {
-                if (
-                  filteredForecast[i].valueMLLW <= filteredForecast[i - j].valueMLLW ||
-                  filteredForecast[i].valueMLLW <= filteredForecast[i + j].valueMLLW
-                ) {
-                  isLocalMax = false;
-                  break;
-                }
-              }
-
-              if (isLocalMax) {
-                if (
-                  allPeaks.length === 0 ||
-                  (filteredForecast[i].dt - allPeaks[allPeaks.length - 1].dt) > 8 * 3600 * 1000
-                ) {
-                  const peakDateStr = filteredForecast[i].dt.toLocaleDateString();
-                  const dailyData = filteredForecast.filter(d => d.dt.toLocaleDateString() === peakDateStr);
-                  const dailyMax = Math.max(...dailyData.map(d => d.valueMLLW));
-                  const dailyMin = Math.min(...dailyData.map(d => d.valueMLLW));
-                  allPeaks.push({
-                    dt: filteredForecast[i].dt,
-                    value: convertDatum(filteredForecast[i].valueMLLW, station),
-                    dailyRange: dailyMax - dailyMin
-                  });
-                }
-              }
-            }
-
-            const activePeaks = showRange ? allPeaks : allPeaks.filter(p => p.value >= threshold - 0.5);
-            const activePeakLayouts = assignPeakLabelLayout(activePeaks, firstTime, lastTime);
-
-            thresholdPill.innerHTML = `<strong>Flood threshold:</strong> ${threshold.toFixed(2)} ft`;
-            datumPill.innerHTML = `<strong>Datum:</strong> ${datum}`;
-            layout.yaxis.title = { text: `Water level in feet (${datum})`, font: { size: 18 } };
-            layout.annotations = [
-              {
-                xref: "paper",
-                yref: "y",
-                x: 0.01,
-                y: threshold,
-                xanchor: "left",
-                yanchor: "bottom",
-                text: "<b>Minor Coastal Flooding</b>",
-                showarrow: false,
-                font: { color: "#ff7f0e", size: 13 },
-                yshift: 4
-              }
-            ];
-
-            activePeaks.forEach((p, idx) => {
-              layout.annotations.push(buildPeakAnnotation(p, activePeakLayouts[idx], showRange));
-            });
-
-            const traces = [
-              {
-                x: [firstTime, lastTime],
-                y: [threshold, threshold],
-                mode: "lines",
-                name: `Flood threshold (${threshold.toFixed(2)} ft)`,
-                line: { width: 3, color: "#ff7f0e", dash: "solid" },
-                hovertemplate:
-                  `%{x|%a, %b %-d, %-I:%M %p}` +
-                  `<br>Flood threshold: %{y:.2f} ft ${datum}` +
-                  `<extra></extra>`
-              },
-              {
-                x: xObserved,
-                y: yObserved,
-                mode: "lines",
-                name: "Observed water level",
-                line: { width: 4, color: "#2ca02c" },
-                connectgaps: false,
-                hovertemplate:
-                  `%{x|%a, %b %-d, %-I:%M %p}` +
-                  `<br>Observed water level: %{y:.2f} ft ${datum}` +
-                  `<extra></extra>`
-              },
-              {
-                x: xForecast,
-                y: yForecast,
-                customdata: customdataForecast,
-                mode: "lines",
-                name: "Forecast water level",
-                line: { width: 4, color: "#1f77b4" },
-                connectgaps: false,
-                hovertemplate:
-                  `%{x|%a, %b %-d, %-I:%M %p}` +
-                  `<br>Expected water level: %{y:.2f} ft ${datum}` +
-                  `<br>Possible range: %{customdata[0]:.2f} – %{customdata[1]:.2f} ft ${datum}` +
-                  `<extra></extra>`
-              },
-              {
-                x: xBand,
-                y: yBandTop,
-                mode: "lines",
-                line: { color: "rgba(0,0,0,0)" },
-                hoverinfo: "skip",
-                showlegend: false,
-                name: "Range upper bound"
-              },
-              {
-                x: xBand,
-                y: yBandBottom,
-                mode: "lines",
-                line: { color: "rgba(0,0,0,0)" },
-                fill: "tonexty",
-                fillcolor: "rgba(31,119,180,0.18)",
-                name: "Likely range",
-                hoverinfo: "skip"
-              },
-              {
-                x: activePeaks.map(p => p.dt),
-                y: activePeaks.map(p => p.value),
-                mode: "markers",
-                name: "Peak tides",
-                marker: { color: "red", size: 8 },
-                showlegend: false,
-                hoverinfo: "skip"
-              }
-            ];
-
-            if (showAstro) {
-              traces.splice(2, 0, {
-                x: xAstro,
-                y: yAstro,
-                mode: "lines",
-                name: "Astronomical tide",
-                line: { width: 3, color: "#9467bd", dash: "dot" },
-                connectgaps: false,
-                hovertemplate:
-                  `%{x|%a, %b %-d, %-I:%M %p}` +
-                  `<br>Astronomical tide: %{y:.2f} ft ${datum}` +
-                  `<extra></extra>`
-              });
-            }
-
-            Plotly.react("chart", traces, layout, {
-              responsive: true,
-              displayModeBar: false,
-              displaylogo: false
-            });
-          };
-
-          redrawCurrentChart();
+          toggleForecastRange.checked = false;
+          toggleForecastRange.disabled = false;
+          toggleForecastRange.title = "Toggle forecast tide range text on forecast peak annotations.";
+          currentAnnotationContext = { station, peaks, peakLayouts, filteredForecast };
         },
         error: function(err) {
           chartEl.innerHTML = `<p style="padding:20px;color:#b42318;font-weight:bold;">Failed to load CSV: ${err.message}</p>`;
@@ -715,8 +603,16 @@
       loadStation(this.value);
     });
 
-    rangeToggle.addEventListener("change", function() {
-      if (redrawCurrentChart) redrawCurrentChart();
+    toggleForecastRange.addEventListener("change", function() {
+      if (!currentAnnotationContext) return;
+      const annotations = buildChartAnnotations(
+        currentAnnotationContext.station,
+        currentAnnotationContext.peaks,
+        currentAnnotationContext.peakLayouts,
+        currentAnnotationContext.filteredForecast,
+        this.checked
+      );
+      Plotly.relayout("chart", { annotations });
     });
 
     astroToggle.addEventListener("change", function() {
