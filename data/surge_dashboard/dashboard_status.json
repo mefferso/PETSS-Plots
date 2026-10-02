@@ -1,10 +1,10 @@
 {
-  "generated_utc": "2026-10-01T23:49:01Z",
-  "generated_local": "2026-10-01 18:49 CDT",
+  "generated_utc": "2026-10-02T03:24:23Z",
+  "generated_local": "2026-10-01 22:24 CDT",
   "headline": "Strong surge signal: forecast surge peaks near 1.00 ft.",
   "series_count": 91,
   "max_surge_ft": 1.0,
-  "max_twl_ft": 2.079,
+  "max_twl_ft": 1.84,
   "max_gust_kt": 17.0,
   "next_high_tide": {
     "time_utc": "2026-10-02T17:13:00Z",
