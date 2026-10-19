@@ -16,7 +16,7 @@ await page.route('https://cdn.jsdelivr.net/**',r=>r.fulfill({path:r.request().ur
 const base=`http://localhost:${server.address().port}`;
 await page.goto(base+'/index.html');await page.waitForFunction(()=>document.querySelector('#chart').data?.length);
 assert.equal(await page.locator('#datumSelect').inputValue(),'MHHW');
-for(const id of await page.locator('#stationSelect option').evaluateAll(options=>options.map(o=>o.value))){
+for(const id of await page.locator('#stationSelect option').evaluateAll(options=>options.map(o=>o.value).filter(id=>!STATIONS[id].observationOnly))){
  await page.selectOption('#stationSelect',id);await page.waitForFunction(id=>document.querySelector('#chart').layout?.title?.text?.includes(STATIONS[id].name),id);
  const before=await page.evaluate(()=>document.querySelector('#chart').data.map(t=>t.y));
  await page.selectOption('#datumSelect','MLLW');
@@ -27,11 +27,41 @@ for(const id of await page.locator('#stationSelect option').evaluateAll(options=
  await page.selectOption('#datumSelect','MHHW');
  if(id==='8760922')assert.match(await page.locator('#thresholdPill').textContent(),/2.33 ft MHHW/);
 }
+for (const [id, datum, threshold] of [['BSGL1','NAVD88',2.5],['BYGL1','MSL',1.2],['MAUL1','NAVD88',4]]) {
+ await page.selectOption('#stationSelect',id);
+ await page.waitForFunction(id=>document.querySelector('#chart').layout?.title?.text===STATIONS[id].name,id);
+ assert.equal(await page.locator('#datumSelect').inputValue(),datum);
+ assert.equal(await page.locator('#datumSelect option[value="MHHW"]').isDisabled(),true);
+ assert.equal(await page.locator('#astroToggle').isVisible(),false);
+ assert.equal(await page.locator('#rangeToggle').isVisible(),false);
+ assert.match(await page.locator('#latestPill').textContent(),/ft.*2026-/);
+ const plot=await page.evaluate(()=>({data:document.querySelector('#chart').data,layout:document.querySelector('#chart').layout}));
+ assert.equal(plot.data.length,2);assert.equal(plot.data[0].y[0],threshold);
+ assert.equal(plot.data[1].connectgaps,false);
+ assert.match(plot.layout.yaxis.title.text,new RegExp(datum));
+ if(id==='BYGL1'){
+  const before=plot.data[1].y;
+  await page.selectOption('#datumSelect','NAVD88');
+  const after=await page.evaluate(()=>document.querySelector('#chart').data);
+  assert.ok(Math.abs(after[0].y[0]-1.68)<1e-9);
+  before.forEach((v,i)=>{if(v!==null)assert.ok(Math.abs(after[1].y[i]-v-.48)<1e-9)});
+ }
+}
+await page.selectOption('#stationSelect','8761927');
+await page.waitForFunction(()=>document.querySelector('#chart').layout?.title?.text?.includes('New Canal'));
+assert.equal(await page.locator('#datumSelect').inputValue(),'MHHW');
+assert.equal(await page.locator('#astroToggle').isVisible(),true);
+await page.setViewportSize({width:390,height:844});
+await page.selectOption('#stationSelect','BSGL1');
+await page.waitForFunction(()=>document.querySelector('#chart').layout?.title?.text===STATIONS.BSGL1.name);
+await page.screenshot({path:'/tmp/petss-observation-mobile.png',fullPage:true});
+await page.setViewportSize({width:1400,height:1000});
+await page.screenshot({path:'/tmp/petss-observation-desktop.png',fullPage:true});
 await page.goto(base+'/surge.html');await page.waitForSelector('#datumSelect');assert.equal(await page.locator('#datumSelect').inputValue(),'MHHW');
 const before=await page.evaluate(()=>chart.data.datasets.map(d=>d.data));
 await page.selectOption('#datumSelect','MLLW');const after=await page.evaluate(()=>chart.data.datasets.map(d=>d.data));
 assert.deepEqual(before[4],after[4]);assert.ok(Math.abs(after[5][0]-before[5][0]-0.41)<1e-9);
 await page.click('#refreshBtn');await page.waitForFunction(()=>!document.querySelector('#refreshBtn').disabled);assert.equal(await page.locator('#datumSelect').inputValue(),'MLLW');
-assert.deepEqual(errors,[]);console.log('PASS: real Chromium + Plotly/Chart.js; six stations, datum switching, Pilots thresholds, surge invariance, refresh, zero page errors');
+assert.deepEqual(errors,[]);console.log('PASS: real Chromium + Plotly/Chart.js; nine stations, observation-only traces, datum switching, Pilots thresholds, surge invariance, refresh, zero page errors');
 await browser.close();server.close();
 })().catch(e=>{console.error(e);process.exit(1)});

@@ -5,7 +5,7 @@ const vm = require('node:vm');
 function page(file) {
   const html = fs.readFileSync(file, 'utf8');
   const elements = {};
-  const el = id => elements[id] ||= {value:'', checked:false, innerHTML:'', addEventListener(e, fn){this[e]=fn}, appendChild(){}, getContext(){return {}}};
+  const el = id => elements[id] ||= {style:{}, value:'', checked:false, innerHTML:'', addEventListener(e, fn){this[e]=fn}, appendChild(){}, getContext(){return {}}};
   for (const match of html.matchAll(/<select id="([^"]+)"[^>]*>([\s\S]*?)<\/select>/g)) {
     const options = [...match[2].matchAll(/<option value="([^"]+)"([^>]*)>/g)];
     if (!options.length) continue;
@@ -23,7 +23,7 @@ function page(file) {
 test('default, all stations, datum round trips and aligned flood/forecast/observations',()=>{
   const p=page('index.html');
   assert.equal(p.el('datumSelect').value,'MHHW');
-  for(const id of p.run('Object.keys(STATIONS)')) {
+  for(const id of p.run('Object.values(STATIONS).filter(s=>!s.observationOnly).map(s=>s.id)')) {
     p.run(`loadStation('${id}')`);
     const mhhw=JSON.parse(JSON.stringify(p.context.plot));
     assert.match(mhhw.layout.yaxis.title.text,/MHHW/);
@@ -76,4 +76,48 @@ test('a late station response cannot replace the newly selected station',()=>{
   p.run('loadStation("8760922")');p.run('loadStation("8747437")');
   pending[1]();const latest=JSON.stringify(p.context.plot);
   pending[0]();assert.equal(JSON.stringify(p.context.plot),latest);
+});
+test('observation stations render only measured levels and aligned native thresholds',async()=>{
+ const p=page('index.html');
+ assert.equal(p.run('Object.values(STATIONS).filter(s=>s.observationOnly).length'),3);
+ for(const [id,datum,threshold] of [['BSGL1','NAVD88',2.5],['BYGL1','MSL',1.2],['MAUL1','NAVD88',4]]){
+  p.el('stationSelect').value=id;p.run(`loadStation('${id}')`);await new Promise(resolve=>setImmediate(resolve));
+  const plot=p.context.plot;
+  assert.match(plot.layout.yaxis.title.text,new RegExp(datum));
+  assert.equal(plot.traces.length,2);assert.equal(plot.traces[0].y[0],threshold);
+  assert.equal(plot.traces[1].connectgaps,false);
+  const source=JSON.parse(fs.readFileSync(`data/observations/${id}.json`));
+  const last=source.observations.filter(r=>r.value!==null).at(-1);
+  assert.ok(Math.abs(plot.traces[1].y.filter(v=>v!==null).at(-1)-(last.value+source.nativeToDisplay))<1e-9);
+  assert.match(p.el('latestPill').textContent,/ft/);
+  if(id==='BYGL1'){
+   p.el('datumSelect').value='NAVD88';p.el('datumSelect').change();
+   assert.ok(Math.abs(p.context.plot.traces[0].y[0]-1.68)<1e-9);
+  }
+ }
+ p.run('loadStation("8761927")');assert.equal(p.el('datumSelect').value,'MHHW');
+});
+test('missing, stale and unavailable observations never leave a forecast chart behind',async()=>{
+ const p=page('index.html');
+ const source=JSON.parse(fs.readFileSync('data/observations/BSGL1.json'));
+ p.context.fetch=async()=>({ok:true,json:async()=>({...source,observations:[],error:'Source unavailable'})});
+ p.el('stationSelect').value='BSGL1';p.run('loadStation("BSGL1")');
+ await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(p.context.plot.traces.length,2);
+ assert.equal(p.context.plot.traces[1].y.length,0);
+ assert.match(p.el('status').textContent,/No usable observations/);
+ p.context.fetch=async()=>({ok:true,json:async()=>({...source,observations:[{time:'2000-01-01T00:00:00Z',value:1},{time:'2000-01-01T00:15:00Z',value:null}]})});
+ p.run('loadStation("BSGL1")');await new Promise(resolve=>setImmediate(resolve));
+ assert.match(p.el('status').textContent,/Stale/);
+ p.context.fetch=async()=>({ok:false});
+ p.run('loadStation("BSGL1")');await new Promise(resolve=>setImmediate(resolve));
+ assert.match(p.el('status').textContent,/observations unavailable/);
+});
+test('late observation response cannot replace a PETSS station',async()=>{
+ const p=page('index.html');let resolve;
+ p.context.fetch=()=>new Promise(r=>resolve=r);
+ p.run('loadStation("BSGL1")');p.run('loadStation("8761927")');
+ const before=JSON.stringify(p.context.plot);
+ resolve({ok:true,json:async()=>JSON.parse(fs.readFileSync('data/observations/BSGL1.json'))});
+ await new Promise(r=>setImmediate(r));assert.equal(JSON.stringify(p.context.plot),before);
 });

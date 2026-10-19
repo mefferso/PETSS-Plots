@@ -136,6 +136,9 @@
       color: #22303c;
     }
 
+    .pill[hidden] { display: none; }
+    .pill { max-width: 100%; overflow-wrap: anywhere; }
+
     .pill strong { font-weight: 700; }
 
     #status {
@@ -199,7 +202,9 @@
 
         <div class="meta">
           <div class="pill"><strong>Observed window:</strong> last 72 hours</div>
-          <div class="pill"><strong>Forecast band:</strong> likely range</div>
+          <div class="pill" id="forecastPill"><strong>Forecast band:</strong> likely range</div>
+          <div class="pill" id="sourcePill" hidden></div>
+          <div class="pill" id="latestPill" hidden></div>
           <div class="pill" id="datumPill"><strong>Datum:</strong> MHHW</div>
           <div class="pill" id="thresholdPill"><strong>Flood threshold:</strong> --</div>
         </div>
@@ -223,6 +228,12 @@
       "8761927": { id: "8761927", name: "New Canal Station, LA", thresholdMLLW: 2.0, datumOffsetMHHW: 0.41, file: "data/8761927.csv" }
     };
 
+    Object.assign(STATIONS, {
+      BSGL1: {id: 'BSGL1', name: 'Barataria Bay and Waterway at Bayou Segnette near Westwego', observationOnly: true, datums: ['NAVD88']},
+      BYGL1: {id: 'BYGL1', name: 'West Bank 1, Bayou Gauche, LA', observationOnly: true, datums: ['MSL', 'NAVD88']},
+      MAUL1: {id: 'MAUL1', name: 'Amite River at Hwy 22 near Maurepas', observationOnly: true, datums: ['NAVD88']}
+    });
+
     const DEFAULT_STATION_ID = "8761927";
 
     const stationSelect = document.getElementById("stationSelect");
@@ -234,6 +245,7 @@
     const astroToggle = document.getElementById("astroToggle");
     const datumSelect = document.getElementById("datumSelect");
 
+    let preferredDatum = "MHHW";
     let redrawCurrentChart = null;
     let stationLoadVersion = 0;
 
@@ -394,6 +406,86 @@
       };
     }
 
+    function configureStationControls(station) {
+      const supported = station.datums || ['MLLW', 'MHHW'];
+      const selected = supported.includes(preferredDatum) ? preferredDatum : supported[0];
+      datumSelect.innerHTML = ['MHHW', 'MLLW', 'NAVD88', 'MSL'].map(d =>
+        `<option value="${d}" ${supported.includes(d) ? '' : 'disabled'}>${d}${supported.includes(d) ? '' : ' (unavailable)'}</option>`).join('');
+      datumSelect.value = selected;
+      for (const toggle of [astroToggle, rangeToggle]) {
+        toggle.disabled = Boolean(station.observationOnly);
+        if (toggle.parentElement) toggle.parentElement.style.display = station.observationOnly ? 'none' : '';
+      }
+      document.getElementById('forecastPill').textContent = station.observationOnly ? 'Observations Only' : 'Forecast band: likely range';
+      for (const id of ['sourcePill','latestPill']) {
+        const el = document.getElementById(id);
+        el.hidden = !station.observationOnly;
+        el.textContent = '';
+      }
+      datumPill.textContent = `Datum: ${selected}`;
+      thresholdPill.textContent = 'Flood threshold: --';
+    }
+
+    async function loadObservations(station, loadVersion) {
+      try {
+        const response = await fetch(`data/observations/${station.id}.json?v=${Date.now()}`);
+        if (!response.ok) throw new Error('Observation file unavailable');
+        const data = await response.json();
+        if (loadVersion !== stationLoadVersion) return;
+        if (data.id !== station.id || data.units !== 'ft' || data.datum !== data.thresholdDatum ||
+            !Number.isFinite(data.nativeToDisplay)) throw new Error('Invalid observation metadata');
+        const rows = (data.observations || []).filter(r => Number.isFinite(Date.parse(r.time)) &&
+          (r.value === null || Number.isFinite(r.value))).sort((a,b)=>Date.parse(a.time)-Date.parse(b.time));
+        const valid = rows.filter(r=>r.value !== null);
+        const latest = valid.at(-1);
+        const end = latest ? new Date(latest.time) : new Date();
+        const start = new Date(end.getTime() - observedHoursBack * 3600000);
+        const windowRows = rows.filter(r=>Date.parse(r.time)>=start.getTime() && Date.parse(r.time)<=end.getTime());
+        document.getElementById('sourcePill').textContent = `Source: ${data.source} • ${station.id}`;
+        redrawCurrentChart = function() {
+          if (loadVersion !== stationLoadVersion) return;
+          const datum = displayDatum();
+          const shift = data.offsets[datum];
+          if (!Number.isFinite(shift)) { setStatus('Datum conversion unavailable.', true); return; }
+          const threshold = data.threshold + shift;
+          const x = [], y = [];
+          let previous = null;
+          for (const row of windowRows) {
+            const date = new Date(row.time);
+            // Break lines over missing intervals rather than imply interpolated observations.
+            if (previous && date - previous > 30 * 60000) {x.push(new Date(previous.getTime()+1));y.push(null);}
+            x.push(date); y.push(row.value === null ? null : row.value + data.nativeToDisplay + shift);
+            previous = date;
+          }
+          datumPill.textContent = `Datum: ${datum}`;
+          thresholdPill.innerHTML = `<strong>Flood threshold:</strong> ${threshold.toFixed(2)} ft ${datum}`;
+          document.getElementById('latestPill').textContent = latest ?
+            `Latest: ${(latest.value + data.nativeToDisplay + shift).toFixed(2)} ft ${datum} • ${fmtLocal(end)} (${end.toISOString()})` : 'Latest: unavailable';
+          Plotly.react('chart', [
+            {x:[start,end],y:[threshold,threshold],mode:'lines',name:`Base flood (${threshold.toFixed(2)} ft ${datum})`,line:{color:'#ff7f0e',width:3},hovertemplate:`%{y:.2f} ft ${datum}<extra>Base flood</extra>`},
+            {x,y,mode:'lines',name:'Observed water level',connectgaps:false,line:{color:'#2ca02c',width:4},hovertemplate:`%{x}<br>%{y:.2f} ft ${datum}<extra>Observed</extra>`}
+          ], {
+            title:{text:station.name}, margin:{l:80,r:40,t:70,b:80},
+            xaxis:{title:{text:'Time (UTC)'},type:'date',range:[start,end],showgrid:true},
+            yaxis:{title:{text:`Water level (ft ${datum})`},showgrid:true},
+            paper_bgcolor:'#ffffff',plot_bgcolor:'#ffffff',hovermode:'x unified',
+            legend:{orientation:'h',y:-0.15},font:{family:'Segoe UI, Roboto, Helvetica, Arial, sans-serif'}
+          }, {responsive:true,displaylogo:false});
+          const age = latest ? (Date.now()-end.getTime())/3600000 : Infinity;
+          const notes = [data.error, age > 3 ? 'Stale observations (more than 3 hours old).' : '',
+            !latest ? 'No usable observations available.' : '',
+            windowRows.some(r=>r.value===null) ? 'Incomplete observations; gaps are not filled.' : '',
+            `Latest available 72-hour window. ${datum === 'MSL' ? 'MSL is the station-specific mean sea level (2012–2016 epoch).' : ''}`,
+            'MHHW/MLLW conversions unavailable for this station.'].filter(Boolean);
+          setStatus(notes.join(' '), Boolean(data.error) || age > 3);
+        };
+        redrawCurrentChart();
+      } catch (error) {
+        if (loadVersion !== stationLoadVersion) return;
+        setStatus(`${station.name}: observations unavailable. ${error.message}`, true);
+      }
+    }
+
     function loadStation(stationId) {
       const station = STATIONS[stationId];
       if (!station) {
@@ -401,10 +493,14 @@
         return;
       }
 
+      configureStationControls(station);
       const loadVersion = ++stationLoadVersion;
       redrawCurrentChart = null;
       Plotly.purge("chart");
       chartEl.innerHTML = "";
+
+      setStatus(`Loading ${station.name}…`);
+      if (station.observationOnly) { loadObservations(station, loadVersion); return; }
 
       Papa.parse(`${station.file}?v=${Date.now()}`, {
         download: true,
@@ -730,6 +826,8 @@
     });
 
     datumSelect.addEventListener("change", function() {
+      const station = STATIONS[stationSelect.value || DEFAULT_STATION_ID];
+      if (!station.observationOnly) preferredDatum = datumSelect.value;
       if (redrawCurrentChart) redrawCurrentChart();
     });
 

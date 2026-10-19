@@ -14,6 +14,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test observation acquisition
+        run: python -m unittest discover -s tests -p 'test_*.py'
       - name: Test display conversion and chart inputs
         run: node --test tests/*.cjs
       - name: Install browser test dependencies
