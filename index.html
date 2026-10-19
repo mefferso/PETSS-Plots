@@ -136,6 +136,7 @@
       color: #22303c;
     }
 
+    .toggle-label[hidden] { display: none !important; }
     .pill[hidden] { display: none; }
     .pill { max-width: 100%; overflow-wrap: anywhere; }
 
@@ -414,7 +415,7 @@
       datumSelect.value = selected;
       for (const toggle of [astroToggle, rangeToggle]) {
         toggle.disabled = Boolean(station.observationOnly);
-        if (toggle.parentElement) toggle.parentElement.style.display = station.observationOnly ? 'none' : '';
+        if (toggle.parentElement) toggle.parentElement.hidden = Boolean(station.observationOnly);
       }
       document.getElementById('forecastPill').textContent = station.observationOnly ? 'Observations Only' : 'Forecast band: likely range';
       for (const id of ['sourcePill','latestPill']) {
