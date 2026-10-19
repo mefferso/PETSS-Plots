@@ -301,6 +301,47 @@
     let countdown = REFRESH_SECONDS;
     let countdownTimer = null;
     let chart = null;
+    let selectedDatum = "MHHW";
+    let rawDashboard = null;
+    let dashboardStatus = null;
+
+    // Generated JSON remains MLLW. Surge is a difference, so never shift it.
+    function dashboardForDisplay(raw) {
+      const data = JSON.parse(JSON.stringify(raw));
+      const height = value => value == null ? value : value - (selectedDatum === "MHHW" ? 0.41 : 0);
+      for (const row of data.series || []) {
+        for (const key of ["twl_ft", "twl10_ft", "twl90_ft", "tide_ft", "obs_ft"]) {
+          if (key in row) row[key] = height(row[key]);
+        }
+      }
+      if (data.summary) {
+        if ("max_twl_ft" in data.summary) data.summary.max_twl_ft = height(data.summary.max_twl_ft);
+        for (const key of ["next_high_tide", "next_low_tide"]) {
+          if (data.summary[key]) data.summary[key].value_ft = height(data.summary[key].value_ft);
+        }
+      }
+      for (const marker of data.hilo_markers || []) marker.value_ft = height(marker.value_ft);
+      return data;
+    }
+
+    function renderDashboard() {
+      const toggles = ["toggleSurgeBand", "toggleTwlBand", "toggleGusts", "toggleObs"];
+      const controls = toggles.map(id => document.getElementById(id));
+      const previous = chart && controls.every(Boolean) ? controls.map(control => control.checked) : null;
+      const data = dashboardForDisplay(rawDashboard);
+      renderScaffold(data, dashboardStatus);
+      if (previous) toggles.forEach((id, i) => { document.getElementById(id).checked = previous[i]; });
+      buildChart(data);
+      if (previous) {
+        [1, 3, 8, 7].forEach((dataset, i) => chart.setDatasetVisibility(dataset, previous[i]));
+        chart.update();
+      }
+      document.getElementById("datumSelect").value = selectedDatum;
+      document.getElementById("datumSelect").addEventListener("change", e => {
+        selectedDatum = e.target.value;
+        renderDashboard();
+      });
+    }
 
     const app = document.getElementById("app");
     const lastUpdatedEl = document.getElementById("lastUpdated");
@@ -403,7 +444,7 @@
 
           ctx.fillStyle = m.type === "H" ? "rgba(183,140,255,0.95)" : "rgba(79,209,139,0.95)";
           ctx.font = "bold 11px Inter, sans-serif";
-          const label = `${m.type} ${m.value_ft ?? "—"} ft`;
+          const label = `${m.type} ${num(m.value_ft, 2)} ft ${selectedDatum}`;
           ctx.save();
           ctx.translate(x + 4, chartArea.bottom - 18);
           ctx.rotate(-Math.PI / 2);
@@ -457,7 +498,7 @@
             <div>
               <div class="headline-title">${esc(status?.headline || data?.headline || "No headline available")}</div>
               <div class="headline-meta">
-                ${esc(data.station_name || "Unknown station")} ·
+                ${esc(data.station_name || "Unknown station")} · Water levels: ft ${selectedDatum} · Surge: ft departure ·
                 Wind source: ${esc(data.wind_source_station_label || "Unknown")} ·
                 ${num(data.series_count, 0)} plotted hours
               </div>
@@ -474,6 +515,9 @@
 
         <div class="panel" style="margin-bottom:16px;">
           <div class="toggle-row">
+            <label class="toggle" for="datumSelect">Display datum
+              <select id="datumSelect"><option value="MHHW">MHHW</option><option value="MLLW">MLLW</option></select>
+            </label>
             <label class="toggle"><input type="checkbox" id="toggleSurgeBand" checked> Show surge 10–90% band</label>
             <label class="toggle"><input type="checkbox" id="toggleTwlBand"> Show TWL 10–90% band</label>
             <label class="toggle"><input type="checkbox" id="toggleGusts" checked> Show gusts</label>
@@ -707,6 +751,10 @@
               titleColor: "#ffffff",
               bodyColor: "#eaf1ff",
               callbacks: {
+                label(item){
+                  const suffix = item.dataset.yAxisID === "y1" ? "kt" : /surge/i.test(item.dataset.label) ? "ft departure" : `ft ${selectedDatum}`;
+                  return `${item.dataset.label}: ${num(item.parsed.y, 2)} ${suffix}`;
+                },
                 title(items){
                   const idx = items[0]?.dataIndex ?? 0;
                   const row = series[idx];
@@ -772,7 +820,7 @@
             y: {
               title: {
                 display: true,
-                text: "Water Level / Surge (ft)",
+                text: `Water level (ft ${selectedDatum}) / Surge (ft departure)`,
                 color: "#dce8fb"
               },
               ticks: {
@@ -851,8 +899,9 @@
           ? `Updated ${data.generated_local}`
           : "Updated time unavailable";
 
-        renderScaffold(data, status);
-        buildChart(data);
+        rawDashboard = data;
+        dashboardStatus = status;
+        renderDashboard();
 
         countdown = REFRESH_SECONDS;
       } catch (err){

@@ -174,7 +174,7 @@
             <label for="datumSelect">Display datum</label>
             <select id="datumSelect">
               <option value="MLLW">MLLW</option>
-              <option value="MHHW">MHHW</option>
+              <option value="MHHW" selected>MHHW</option>
             </select>
           </div>
 
@@ -200,7 +200,7 @@
         <div class="meta">
           <div class="pill"><strong>Observed window:</strong> last 72 hours</div>
           <div class="pill"><strong>Forecast band:</strong> likely range</div>
-          <div class="pill" id="datumPill"><strong>Datum:</strong> MLLW</div>
+          <div class="pill" id="datumPill"><strong>Datum:</strong> MHHW</div>
           <div class="pill" id="thresholdPill"><strong>Flood threshold:</strong> --</div>
         </div>
       </div>
@@ -213,9 +213,10 @@
   <script>
     const observedHoursBack = 72;
 
+    // Offsets are MHHW elevations above MLLW, in feet. See docs/display-datums.md.
     const STATIONS = {
       "8747437": { id: "8747437", name: "Waveland, MS", thresholdMLLW: 3.2, datumOffsetMHHW: 1.61, file: "data/8747437.csv" },
-      "8760922": { id: "8760922", name: "Pilots Station, LA", thresholdMLLW: 1.5, datumOffsetMHHW: 1.08, file: "data/8760922.csv" },
+      "8760922": { id: "8760922", name: "Pilots Station, LA", thresholdMLLW: 3.50, datumOffsetMHHW: 1.17, file: "data/8760922.csv" },
       "8761305": { id: "8761305", name: "Shell Beach, LA", thresholdMLLW: 3.3, datumOffsetMHHW: 0.97, file: "data/8761305.csv" },
       "8761724": { id: "8761724", name: "Grand Isle, LA", thresholdMLLW: 2.4, datumOffsetMHHW: 1.16, file: "data/8761724.csv" },
       "8762075": { id: "8762075", name: "Port Fourchon, LA", thresholdMLLW: 2.2, datumOffsetMHHW: 1.17, file: "data/8762075.csv" },
@@ -234,6 +235,7 @@
     const datumSelect = document.getElementById("datumSelect");
 
     let redrawCurrentChart = null;
+    let stationLoadVersion = 0;
 
     function displayDatum() {
       return datumSelect.value;
@@ -399,6 +401,8 @@
         return;
       }
 
+      const loadVersion = ++stationLoadVersion;
+      redrawCurrentChart = null;
       Plotly.purge("chart");
       chartEl.innerHTML = "";
 
@@ -407,6 +411,7 @@
         dynamicTyping: false,
         skipEmptyLines: true,
         complete: function(results) {
+          if (loadVersion !== stationLoadVersion) return;
           const rows = results.data;
 
           if (!rows || rows.length < 2) {
@@ -588,7 +593,7 @@
             const activePeaks = showRange ? allPeaks : allPeaks.filter(p => p.value >= threshold - 0.5);
             const activePeakLayouts = assignPeakLabelLayout(activePeaks, firstTime, lastTime);
 
-            thresholdPill.innerHTML = `<strong>Flood threshold:</strong> ${threshold.toFixed(2)} ft`;
+            thresholdPill.innerHTML = `<strong>Flood threshold:</strong> ${threshold.toFixed(2)} ft ${datum}`;
             datumPill.innerHTML = `<strong>Datum:</strong> ${datum}`;
             layout.yaxis.title = { text: `Water level in feet (${datum})`, font: { size: 18 } };
             layout.annotations = [
@@ -615,7 +620,7 @@
                 x: [firstTime, lastTime],
                 y: [threshold, threshold],
                 mode: "lines",
-                name: `Flood threshold (${threshold.toFixed(2)} ft)`,
+                name: `Flood threshold (${threshold.toFixed(2)} ft ${datum})`,
                 line: { width: 3, color: "#ff7f0e", dash: "solid" },
                 hovertemplate:
                   `%{x|%a, %b %-d, %-I:%M %p}` +
@@ -703,6 +708,7 @@
           redrawCurrentChart();
         },
         error: function(err) {
+          if (loadVersion !== stationLoadVersion) return;
           chartEl.innerHTML = `<p style="padding:20px;color:#b42318;font-weight:bold;">Failed to load CSV: ${err.message}</p>`;
           setStatus(`Failed to load ${station.name}.`, true);
         }
