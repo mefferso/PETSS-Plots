@@ -17,7 +17,7 @@ const base=`http://localhost:${server.address().port}`;
 await page.goto(base+'/index.html');await page.waitForFunction(()=>document.querySelector('#chart').data?.length);
 assert.equal(await page.locator('#datumSelect').inputValue(),'MHHW');
 for(const id of await page.locator('#stationSelect option').evaluateAll(options=>options.map(o=>o.value))){
- await page.selectOption('#stationSelect',id);await page.waitForFunction(id=>document.querySelector('#chart').layout.title.text.includes(STATIONS[id].name),id);
+ await page.selectOption('#stationSelect',id);await page.waitForFunction(id=>document.querySelector('#chart').layout?.title?.text?.includes(STATIONS[id].name),id);
  const before=await page.evaluate(()=>document.querySelector('#chart').data.map(t=>t.y));
  await page.selectOption('#datumSelect','MLLW');
  const after=await page.evaluate(()=>document.querySelector('#chart').data.map(t=>t.y));
