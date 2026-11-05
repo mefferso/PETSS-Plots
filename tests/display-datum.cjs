@@ -79,8 +79,8 @@ test('a late station response cannot replace the newly selected station',()=>{
 });
 test('observation stations render only measured levels and aligned native thresholds',async()=>{
  const p=page('index.html');
- assert.equal(p.run('Object.values(STATIONS).filter(s=>s.observationOnly).length'),3);
- for(const [id,datum,threshold] of [['BSGL1','NAVD88',2.5],['BYGL1','MSL',1.2],['MAUL1','NAVD88',4]]){
+ assert.equal(p.run('Object.values(STATIONS).filter(s=>s.observationOnly).length'),5);
+ for(const [id,datum,threshold] of [['BSGL1','NAVD88',2.5],['BYGL1','MSL',1.2],['MAUL1','NAVD88',4],['8741533','MLLW',3.0],['8764227','MLLW',5.3]]){
   p.el('stationSelect').value=id;p.run(`loadStation('${id}')`);await new Promise(resolve=>setImmediate(resolve));
   const plot=p.context.plot;
   assert.match(plot.layout.yaxis.title.text,new RegExp(datum));
@@ -88,8 +88,17 @@ test('observation stations render only measured levels and aligned native thresh
   assert.equal(plot.traces[1].connectgaps,false);
   const source=JSON.parse(fs.readFileSync(`data/observations/${id}.json`));
   const last=source.observations.filter(r=>r.value!==null).at(-1);
-  assert.ok(Math.abs(plot.traces[1].y.filter(v=>v!==null).at(-1)-(last.value+source.nativeToDisplay))<1e-9);
-  assert.match(p.el('latestPill').textContent,/ft/);
+  if (last) {
+   assert.ok(Math.abs(plot.traces[1].y.filter(v=>v!==null).at(-1)-(last.value+source.nativeToDisplay))<1e-9);
+   assert.match(p.el('latestPill').textContent,/ft/);
+  } else {
+   assert.equal(plot.traces[1].y.length, 0, 'new station must not fabricate observations');
+   assert.match(p.el('status').textContent,/No usable observations/);
+  }
+  if(id==='8741533' || id==='8764227'){
+   p.el('datumSelect').value='MHHW';p.el('datumSelect').change();
+   assert.ok(Math.abs(p.context.plot.traces[0].y[0]-(id==='8741533'?1.47:3.69))<1e-9);
+  }
   if(id==='BYGL1'){
    p.el('datumSelect').value='NAVD88';p.el('datumSelect').change();
    assert.ok(Math.abs(p.context.plot.traces[0].y[0]-1.68)<1e-9);
