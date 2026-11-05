@@ -479,7 +479,7 @@
             !latest ? 'No usable observations available.' : '',
             windowRows.some(r=>r.value===null) ? 'Incomplete observations; gaps are not filled.' : '',
             `Latest available 72-hour window. ${datum === 'MSL' ? 'MSL is the station-specific mean sea level (2012–2016 epoch).' : ''}`,
-            'MHHW/MLLW conversions unavailable for this station.'].filter(Boolean);
+            (!Number.isFinite(data.offsets.MHHW) || !Number.isFinite(data.offsets.MLLW)) ? 'MHHW/MLLW conversions unavailable for this station.' : ''].filter(Boolean);
           setStatus(notes.join(' '), Boolean(data.error) || age > 3);
         };
         redrawCurrentChart();
