@@ -21,6 +21,25 @@ class Observations(unittest.TestCase):
             self.assertEqual(a['dateTime'],b['dateTime'])
             self.assertAlmostEqual(float(b['value'])-float(a['value']),self.m.STATIONS['MAUL1']['nativeToDisplay'])
 
+    def test_new_tidal_station_thresholds_and_coops_offsets(self):
+        for station, threshold, mhhw in [('8741533', 3.00, 1.47), ('8764227', 5.30, 3.69)]:
+            config = self.m.STATIONS[station]
+            self.assertEqual(config['thresholdDatum'], 'MLLW')
+            self.assertAlmostEqual(config['threshold'], threshold)
+            self.assertAlmostEqual(config['threshold'] + config['offsets']['MHHW'], mhhw)
+            rows = {'metadata': {'id': station}, 'data': [{'t': '2026-11-05 12:00', 'v': '2.00'}]}
+            # NOAA CO-OPS time strings use a space rather than ISO 'T'.
+            rows['data'][0]['t'] = '2026-11-05T12:00:00Z'
+            meta = {'units': 'feet', 'datums': [
+                {'name': 'MLLW', 'value': 0.0},
+                {'name': 'MHHW', 'value': threshold-mhhw},
+            ]}
+            with patch.object(self.m, 'get_json', side_effect=[rows, meta]) as get:
+                result = self.m.collect(station, config)
+            self.assertEqual(result['observations'][0]['value'], 2.00)
+            self.assertEqual(result['offsets']['MHHW'], round(mhhw-threshold, 6))
+            self.assertIn('station='+station, get.call_args_list[0].args[0])
+
     def test_nwps_window_preserves_raw_values_and_nulls(self):
         raw={'observed':{'primaryUnits':'ft','primaryName':'Stage','data':[
             {'validTime':'2026-10-15T00:00:00Z','primary':9},
