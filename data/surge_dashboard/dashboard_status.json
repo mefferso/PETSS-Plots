@@ -1,21 +1,21 @@
 {
-  "generated_utc": "2026-11-05T04:30:20Z",
-  "generated_local": "2026-11-04 22:30 CST",
+  "generated_utc": "2026-11-05T12:52:00Z",
+  "generated_local": "2026-11-05 06:52 CST",
   "headline": "Modest surge signal: forecast surge peaks near 0.70 ft.",
   "series_count": 91,
   "max_surge_ft": 0.7,
-  "max_twl_ft": 2.328,
+  "max_twl_ft": 2.333,
   "max_gust_kt": 9.0,
   "next_high_tide": {
-    "time_utc": "2026-11-05T11:08:00Z",
-    "time_local": "2026-11-05 05:08 CST",
+    "time_utc": "2026-11-05T21:20:00Z",
+    "time_local": "2026-11-05 15:20 CST",
     "type": "H",
-    "value_ft": 0.525
+    "value_ft": 0.538
   },
   "next_low_tide": {
-    "time_utc": "2026-11-05T06:11:00Z",
-    "time_local": "2026-11-05 00:11 CST",
+    "time_utc": "2026-11-05T16:35:00Z",
+    "time_local": "2026-11-05 10:35 CST",
     "type": "L",
-    "value_ft": 0.476
+    "value_ft": 0.506
   }
 }
