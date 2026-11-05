@@ -21,8 +21,10 @@ user-supplied base flood levels, not automatically imported flood categories.
 | BSGL1 | Barataria Bay and Waterway at Bayou Segnette near Westwego | NOAA NWPS, Stage (ft), USACE/CPRA gauge zero 0 ft NAVD88 | 2.50 ft NAVD88 | NAVD88 |
 | BYGL1 / 8762482 | West Bank 1, Bayou Gauche, LA | NOAA CO-OPS water_level, MSL | 1.20 ft MSL | MSL (default), NAVD88 |
 | MAUL1 / USGS 07380215 | Amite River at Hwy 22 near Maurepas | NOAA NWPS Stage = USGS 00065 gauge height (ft) | 4.00 ft NAVD88 | NAVD88, after subtracting 1.38 ft from gauge height |
+| 8741533 | Pascagoula NOAA Lab, MS | NOAA CO-OPS water_level (MLLW) | 3.00 ft MLLW = 1.47 ft MHHW | MLLW, MHHW |
+| 8764227 | LAWMA, Amerada Pass, LA | NOAA CO-OPS water_level (MLLW) | 5.30 ft MLLW = 3.69 ft MHHW | MLLW, MHHW |
 
-MHHW and MLLW are disabled for these three stations because no authoritative
+MHHW and MLLW are disabled for the original three observation-only stations because no authoritative
 station-specific tidal transformations were verified. The six PETSS stations
 still start in MHHW; visiting an observation station does not replace the tidal
 datum preference. The threshold always remains stored in the user's original
@@ -86,3 +88,10 @@ Run `python -m unittest discover -s tests -p 'test_*.py'`,
 Chromium). The PR workflow runs these checks, including all nine stations,
 threshold placement, supported and unavailable datums, forecast preservation,
 mobile rendering, source failures, stale data and out-of-order station loads.
+
+### Pascagoula and Amerada Pass
+
+NOAA CO-OPS station 8741533 (Pascagoula NOAA Lab) has MHHW 1.53 ft above MLLW; station 8764227 (LAWMA, Amerada Pass) has MHHW 1.61 ft above MLLW. The base flood thresholds are 3.00 ft MLLW (1.47 ft MHHW) and 5.30 ft MLLW (3.69 ft MHHW), respectively, according to the NWS local advisory threshold map supplied November 5, 2026. The observation collector retrieves NOAA CO-OPS data in MLLW and validates station-specific MHHW offsets from NOAA metadata each run. These stations do **not** have PETSS forecast traces in this viewer. Their thresholds are local advisory thresholds, not NOAA's tidal datum elevations.
+
+- https://tidesandcurrents.noaa.gov/datums.html?id=8741533
+- https://tidesandcurrents.noaa.gov/datums.html?id=8764227
