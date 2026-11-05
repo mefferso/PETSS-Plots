@@ -82,6 +82,7 @@ test('observation stations render only measured levels and aligned native thresh
  assert.equal(p.run('Object.values(STATIONS).filter(s=>s.observationOnly).length'),5);
  for(const [id,datum,threshold] of [['BSGL1','NAVD88',2.5],['BYGL1','MSL',1.2],['MAUL1','NAVD88',4],['8741533','MLLW',3.0],['8764227','MLLW',5.3]]){
   p.el('stationSelect').value=id;p.run(`loadStation('${id}')`);await new Promise(resolve=>setImmediate(resolve));
+  if(id==='8741533' || id==='8764227') {p.el('datumSelect').value='MLLW';p.el('datumSelect').change();}
   const plot=p.context.plot;
   assert.match(plot.layout.yaxis.title.text,new RegExp(datum));
   assert.equal(plot.traces.length,2);assert.equal(plot.traces[0].y[0],threshold);
