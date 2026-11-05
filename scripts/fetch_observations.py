@@ -14,6 +14,12 @@ STATIONS = {
     'BYGL1': dict(name='West Bank 1, Bayou Gauche, LA', coopsId='8762482',
                   source='NOAA CO-OPS', nativeDatum='MSL', datum='MSL', nativeToDisplay=0.0,
                   threshold=1.20, thresholdDatum='MSL', offsets={'MSL': 0.0, 'NAVD88': 0.48}),
+    '8741533': dict(name='Pascagoula NOAA Lab, MS', coopsId='8741533',
+                    source='NOAA CO-OPS', nativeDatum='MLLW', datum='MLLW', nativeToDisplay=0.0,
+                    threshold=3.00, thresholdDatum='MLLW', offsets={'MLLW': 0.0, 'MHHW': -1.53}),
+    '8764227': dict(name='LAWMA, Amerada Pass, LA', coopsId='8764227',
+                    source='NOAA CO-OPS', nativeDatum='MLLW', datum='MLLW', nativeToDisplay=0.0,
+                    threshold=5.30, thresholdDatum='MLLW', offsets={'MLLW': 0.0, 'MHHW': -1.61}),
     'MAUL1': dict(name='Amite River at Hwy 22 near Maurepas',
                   source='NOAA NWPS (USGS 07380215)', nativeDatum='Gauge height', datum='NAVD88',
                   nativeToDisplay=-1.38, threshold=4.00, thresholdDatum='NAVD88', offsets={'NAVD88': 0.0}),
@@ -51,7 +57,8 @@ def normalize(rows, time_key, value_key):
 def collect(lid, config):
     if config.get('coopsId'):
         url = ('https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?'
-               'product=water_level&station=8762482&date=recent&datum=MSL&units=english&time_zone=gmt&format=json')
+               f'product=water_level&station={config["coopsId"]}&date=recent&datum={config["nativeDatum"]}'
+               '&units=english&time_zone=gmt&format=json')
         raw = get_json(url)
         if raw.get('metadata',{}).get('id') != config['coopsId']:
             raise ValueError('CO-OPS station mismatch or API error')
@@ -68,6 +75,14 @@ def collect(lid, config):
         if metadata['units'] != 'feet':
             raise ValueError('Unexpected datum metadata units')
         config = dict(config, offsets={'MSL': 0.0, 'NAVD88': round(elevations['MSL']-elevations['NAVD88'], 6)})
+    if lid in ('8741533', '8764227'):
+        metadata = get_json(f'https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations/{config["coopsId"]}/datums.json?units=english')
+        if metadata.get('units') != 'feet':
+            raise ValueError('Unexpected tidal datum metadata units')
+        elevations = {d['name']: float(d['value']) for d in metadata['datums'] if d.get('value') is not None}
+        if 'MLLW' not in elevations or 'MHHW' not in elevations:
+            raise ValueError('Missing MLLW or MHHW in tidal datum metadata')
+        config = dict(config, offsets={'MLLW': 0.0, 'MHHW': round(elevations['MLLW'] - elevations['MHHW'], 6)})
     if lid == 'MAUL1':
         # NWPS metadata/page notes disagree with current USGS measurements.
         # Verify the configured gauge-zero against simultaneous 00065/63160 values.
