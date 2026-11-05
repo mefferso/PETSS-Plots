@@ -4,7 +4,7 @@ on:
     - cron: '17,47 * * * *'
   workflow_dispatch:
   push:
-    branches: ['feat/observation-only-stations']
+    branches: ['main']
     paths:
       - scripts/fetch_observations.py
       - .github/workflows/fetch-observations.yml
